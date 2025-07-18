@@ -31,7 +31,7 @@ final class HomeViewModel: ObservableObject {
             try await Task.sleep(for: .seconds(1))   // simulamos red
             games = Stub.games
         } catch {
-            alert = "No se pudieron obtener los datos: \(error.localizedDescription)"
+			errorMessage = "No se pudieron obtener los datos: \(error.localizedDescription)"
         }
     }
 
