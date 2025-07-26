@@ -16,6 +16,10 @@ on:
 jobs:
   test:
     runs-on: macos-15
+    permissions:
+      contents: read          # basta con leer el código
+      issues: write           # para crear comentarios en PR/issues
+      pull-requests: write    # opcional, también cubre comentarios en PR
     timeout-minutes: 45
 
     # ───────────── Filtro de ejecución ─────────────
@@ -55,6 +59,17 @@ jobs:
         with:
           name: TestResults
           path: ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+
+      - name: Publish coverage JSON
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main' && job.status == 'success'
+        with:
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          external_repository: ${{ github.repository }}
+          publish_dir: .
+          publish_branch: gh-pages
+          destination_dir: coverage
+          keep_files: true    # no borra otros assets
 
       # ───────────── Comentario de resultado ─────────────
       - name: Comment on PR
