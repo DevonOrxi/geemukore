@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CollectionCoordinatorView: View {
-	@StateObject var coordinator: CollectionCoordinator
-	var body: some View { coordinator.start() }
+	var body: some View {
+		EmptyView()
+	}
 }

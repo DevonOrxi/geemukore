@@ -12,21 +12,33 @@ struct ContentView: View {
 	
 	var body: some View {
 		TabView(selection: $tabCoordinator.currentTab) {
-			tabCoordinator.explore.view
+			exploreView
 				.tabItem { Label("Explore", systemImage: "gamecontroller") }
 				.tag(TabElement.explore)
 			
-			CollectionCoordinatorView(coordinator: tabCoordinator.collection)
+			collectionView
 				.tabItem { Label("Collection", systemImage: "tray.full") }
 				.tag(TabElement.collection)
 			
-			ProfileCoordinatorView(coordinator: tabCoordinator.profile)
+			profileView
 				.tabItem { Label("Profile", systemImage: "person.circle") }
 				.tag(TabElement.profile)
 		}
 		.onReceive(tabCoordinator.tabTapPublisher) { tappedTab in
 			tabCoordinator.handleTabTap(tappedTab)
 		}
+	}
+	
+	private var exploreView: some View {
+		tabCoordinator.explore.view
+	}
+	
+	private var collectionView: some View {
+		tabCoordinator.collection.view
+	}
+	
+	private var profileView: some View {
+		tabCoordinator.profile.view
 	}
 }
 

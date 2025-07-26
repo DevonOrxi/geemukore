@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileCoordinatorView: View {
-	@StateObject var coordinator: ProfileCoordinator
-	var body: some View { coordinator.start() }
+	var body: some View {
+		EmptyView()
+	}
 }
