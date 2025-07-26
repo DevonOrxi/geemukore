@@ -30,6 +30,23 @@ jobs:
         contains(github.event.comment.body, 'check pr') )
 
     steps:
+     # ───────────── Comentario de arranque ─────────────
+      - name: Comment CI started
+        if: github.event_name == 'pull_request' || github.event_name == 'issue_comment'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = (context.eventName === 'pull_request')
+              ? context.payload.number
+              : context.payload.issue.number
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: prNumber,
+              body: '🚀 **iOS CI** comenzando *build* + *tests*…'
+            })
+      
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
 
