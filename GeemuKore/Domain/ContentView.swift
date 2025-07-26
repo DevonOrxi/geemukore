@@ -12,9 +12,9 @@ struct ContentView: View {
 	
 	var body: some View {
 		TabView(selection: $tabCoordinator.currentTab) {
-			ExploreCoordinatorView(coordinator: tabCoordinator.home)
+			tabCoordinator.explore.view
 				.tabItem { Label("Explore", systemImage: "gamecontroller") }
-				.tag(TabElement.home)
+				.tag(TabElement.explore)
 			
 			CollectionCoordinatorView(coordinator: tabCoordinator.collection)
 				.tabItem { Label("Collection", systemImage: "tray.full") }

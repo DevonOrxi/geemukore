@@ -8,31 +8,43 @@
 import SwiftUI
 import Combine
 
-final class ExploreCoordinator: ObservableObject {
-	@Published var path = NavigationPath()
-	
-	private var pathBinding: Binding<NavigationPath> {
-		Binding(
-			get: { self.path },
-			set: { self.path = $0 }
-		)
+@Observable
+final class ExploreCoordinator {
+	enum ExploreScene: Hashable {
+		case detail(GameDetailModel)
 	}
 	
-	func start() -> some View {
-		NavigationStack(path: pathBinding) {
-			HomeView(viewModel: HomeViewModel(coordinator: self))
-				.navigationDestination(for: Game.self) { game in
-					EmptyView()
-					//          GameDetailView(viewModel: GameDetailViewModel(game: game))
-				}
+	private let rootPath: [ExploreScene] = []
+	private var path: [ExploreScene] = []
+	private var selectGameDetail: SelectGameDetail
+	
+	init (selectGameDetail: SelectGameDetail) {
+		self.selectGameDetail = selectGameDetail
+		setup()
+	}
+	
+	var view: some View {
+		NavigationStack(
+			path: Binding(
+				get: { self.path },
+				set: { [unowned self] in self.path = $0 }
+			)
+		) {
+			ExploreCoordinatorView(selectGameDetail: selectGameDetail)
 		}
 	}
 	
-	func showDetail(for game: Game) {
-		path.append(game)
+	private func setup() {
+		selectGameDetail.setNavigationToGameDetail{ [weak self] game in
+			self?.goToGameDetailView(for: game)
+		}
 	}
 	
-	func popToRoot() {
-		path.removeLast(path.count)
+	private func goToGameDetailView(for game: GameDetailModel) {
+		path.append(.detail(game))
+	}
+	
+	func onTabDoubleTap() {
+		path = rootPath
 	}
 }

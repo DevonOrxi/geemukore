@@ -24,11 +24,7 @@ final class ProfileCoordinator: ObservableObject {
 		}
 	}
 	
-	func showDetail(for game: Game) {
-		path.append(game)
-	}
-	
-	func popToRoot() {
+	func onTabDoubleTap() {
 		path.removeLast(path.count)
 	}
 }

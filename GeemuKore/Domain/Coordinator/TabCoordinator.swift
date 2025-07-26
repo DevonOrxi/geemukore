@@ -9,21 +9,27 @@ import SwiftUI
 import Combine
 
 final class TabCoordinator: ObservableObject {
-	@Published var currentTab: TabElement = .home
+	@Published var currentTab: TabElement = .explore
+
+	private(set) var explore: ExploreCoordinator
+	private(set) var collection: CollectionCoordinator
+	private(set) var profile: ProfileCoordinator
+	private let dependencies: DependencyRepository
 	
-	// Sub-coordinators
-	let home = ExploreCoordinator()
-	let collection = CollectionCoordinator()
-	let profile = ProfileCoordinator()
+	init(dependencies: DependencyRepository = DependencyRepositoryLocal()) {
+		self.dependencies = dependencies
+		self.explore = .init(selectGameDetail: dependencies.actions.selectGameDetail)
+		self.collection = .init()
+		self.profile = .init()
+	}
 	
-	// Publisher para taps
-	let tabTapPublisher = PassthroughSubject<TabElement, Never>()
+	private(set) var tabTapPublisher = PassthroughSubject<TabElement, Never>()
 	
 	func handleTabTap(_ tab: TabElement) {
 		switch tab {
-		case .home: home.popToRoot()
-		case .collection: collection.popToRoot()
-		case .profile: profile.popToRoot()
+		case .explore: explore.onTabDoubleTap()
+		case .collection: collection.onTabDoubleTap()
+		case .profile: profile.onTabDoubleTap()
 		}
 	}
 }
