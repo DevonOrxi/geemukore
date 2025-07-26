@@ -17,7 +17,9 @@ jobs:
   test:
     runs-on: macos-15
     permissions:
-      contents: write
+      contents: read          # basta con leer el código
+      issues: write           # para crear comentarios en PR/issues
+      pull-requests: write    # opcional, también cubre comentarios en PR
     timeout-minutes: 45
 
     # ───────────── Filtro de ejecución ─────────────
