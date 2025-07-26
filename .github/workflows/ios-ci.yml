@@ -1,37 +1,30 @@
-name: iOS CI
-
-on:
-  pull_request:
-    branches: [main]
-
 jobs:
   test:
-    runs-on: macos-15          # o macos-latest
-    timeout-minutes: 45
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
 
-      - uses: maxim-lobanov/setup-xcode@v1    # ⇦ NUEVO
+      - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4'               # ajusta a tu objetivo
+          xcode-version: 'latest-stable'   # ← o '16.4'
 
       - name: Resolve Swift Packages
-        run: |
-          xcodebuild -resolvePackageDependencies \
-            -project GeemuKore.xcodeproj \
-            -scheme GeemuKore
+        run: >
+          xcodebuild -resolvePackageDependencies
+          -project GeemuKore.xcodeproj
+          -scheme GeemuKore
 
-      - name: Build & Test (iPhone 15 / iOS 17.4)
-        run: |
-          xcodebuild test \
-            -project GeemuKore.xcodeproj \
-            -scheme GeemuKore \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.4' \
-            -parallel-testing-enabled NO \
-            clean build \
-            | xcpretty --simple --color
+      - name: Build & Test (iPhone 15 / iOS 18.0)
+        run: >
+          xcodebuild test
+          -project GeemuKore.xcodeproj
+          -scheme GeemuKore
+          -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0'
+          -parallel-testing-enabled NO
+          clean build |
+          xcpretty --simple --color
         env: { NSUnbufferedIO: 'YES' }
 
       - uses: actions/upload-artifact@v4
