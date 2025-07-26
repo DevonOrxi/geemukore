@@ -15,40 +15,16 @@ struct HomeView: View {
 			if viewModel.isLoading {
 				ProgressView("Loading…")
 			} else {
-				List(viewModel.games) { game in
-					Button {
-						viewModel.select(game)
-					} label: {
-						HStack {
-							AsyncImage(url: game.coverURL) { image in
-								image.resizable().aspectRatio(contentMode: .fill)
-							} placeholder: {
-								Color.gray.opacity(0.3)
-							}
-							.frame(width: 60, height: 90)
-							.cornerRadius(8)
-							
-							VStack(alignment: .leading, spacing: 4) {
-								Text(game.title)
-									.font(.headline)
-								if let date = game.releaseDate {
-									Text(String(date.year))
-										.font(.subheadline)
-										.foregroundStyle(.secondary)
-								}
-							}
-						}
-					}
-				}
-				.listStyle(.plain)
+				gameListView
 			}
 		}
 		.navigationTitle("Explore")
-		.alert("Error",
-			   isPresented: Binding(
+		.alert(
+			"Error",
+			isPresented: Binding(
 				get: { viewModel.errorMessage != nil },
 				set: { if !$0 { viewModel.errorMessage = nil } }
-			   )
+			)
 		) {
 			// acciones (vacías → solo botón OK)
 		} message: {
@@ -56,5 +32,36 @@ struct HomeView: View {
 				Text(msg)
 			}
 		}
+	}
+	
+	var gameListView: some View {
+		List(viewModel.games) { game in
+			Button {
+				Task {
+					await viewModel.select(game)
+				}
+			} label: {
+				HStack {
+					AsyncImage(url: game.coverURL) { image in
+						image.resizable().aspectRatio(contentMode: .fill)
+					} placeholder: {
+						Color.gray.opacity(0.3)
+					}
+					.frame(width: 60, height: 90)
+					.cornerRadius(8)
+					
+					VStack(alignment: .leading, spacing: 4) {
+						Text(game.title)
+							.font(.headline)
+						if let date = game.releaseDate {
+							Text(String(date.year))
+								.font(.subheadline)
+								.foregroundStyle(.secondary)
+						}
+					}
+				}
+			}
+		}
+		.listStyle(.plain)
 	}
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Game: Identifiable, Hashable {
+struct GameOverviewModel: Identifiable, Hashable {
     let id: Int
     let title: String
     let coverURL: URL?

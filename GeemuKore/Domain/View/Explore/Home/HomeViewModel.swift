@@ -10,15 +10,15 @@ import Combine
 
 @MainActor
 final class HomeViewModel: ObservableObject {
-    @Published private(set) var games: [Game] = []
+    @Published private(set) var games: [GameOverviewModel] = []
     @Published private(set) var isLoading = false
     @Published var errorMessage: String?
 
-    private let coordinator: ExploreCoordinator
+    private let selectGameDetail: SelectGameDetail
     private var cancellables = Set<AnyCancellable>()
 
-    init(coordinator: ExploreCoordinator) {
-        self.coordinator = coordinator
+	init(selectGameDetail: SelectGameDetail) {
+        self.selectGameDetail = selectGameDetail
         Task { await fetchTrending() }
     }
 
@@ -35,30 +35,26 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    func select(_ game: Game) {
-        coordinator.showDetail(for: game)
+	func select(_ game: GameOverviewModel) async {
+		await selectGameDetail.execute(for: game)
     }
 }
 
-enum Stub {
-    static let games: [Game] = [
-        Game(id: 1,
-             title: "The Legend of Zelda: Breath of the Wild",
-             coverURL: URL(string: "https://picsum.photos/id/237/200/300"),
-             releaseDate: .createFrom(day: 1, month: 1, year: 2017)),
-        Game(id: 2,
-             title: "Hollow Knight",
-             coverURL: URL(string: "https://picsum.photos/id/1025/200/300"),
-             releaseDate: .createFrom(day: 1, month: 1, year: 2017)),
-        Game(id: 3,
-             title: "Celeste",
-             coverURL: URL(string: "https://picsum.photos/id/1005/200/300"),
-             releaseDate: .createFrom(day: 1, month: 1, year: 2017))
-    ]
-}
-
-extension Date {
-    static func createFrom(day: Int, month: Int, year: Int) -> Date? {
-        DateComponents(calendar: .autoupdatingCurrent, year: year, month: month, day: day).date
-    }
+private extension HomeViewModel {
+	enum Stub {
+		static let games: [GameOverviewModel] = [
+			GameOverviewModel(id: 1,
+				 title: "The Legend of Zelda: Breath of the Wild",
+				 coverURL: URL(string: "https://picsum.photos/id/237/200/300"),
+				 releaseDate: .createFrom(day: 1, month: 1, year: 2017)),
+			GameOverviewModel(id: 2,
+				 title: "Hollow Knight",
+				 coverURL: URL(string: "https://picsum.photos/id/1025/200/300"),
+				 releaseDate: .createFrom(day: 1, month: 1, year: 2017)),
+			GameOverviewModel(id: 3,
+				 title: "Celeste",
+				 coverURL: URL(string: "https://picsum.photos/id/1005/200/300"),
+				 releaseDate: .createFrom(day: 1, month: 1, year: 2017))
+		]
+	}
 }

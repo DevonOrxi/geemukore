@@ -1,0 +1,79 @@
+name: iOS CI
+
+on:
+  # ① Auto-run SOLO al abrir / re-abrir la PR
+  pull_request:
+    types: [opened, reopened]
+    branches: [main]
+
+  # ② Run a petición vía comentario 'check pr'
+  issue_comment:
+    types: [created]
+
+  # ③ (Opcional) Lanzar manualmente desde la UI
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    # ───────────── Filtro de ejecución ─────────────
+    if: |
+      ( github.event_name == 'pull_request' ) ||
+      ( github.event_name == 'issue_comment'  &&
+        github.event.issue.pull_request != null &&
+        contains(github.event.comment.body, 'check pr') )
+
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with: { xcode-version: 'latest-stable' }
+
+      - name: Resolve Swift Packages
+        run: >
+          xcodebuild -resolvePackageDependencies
+          -project GeemuKore.xcodeproj
+          -scheme GeemuKore
+
+      - name: Build & Test (iPhone 15 / iOS 18)
+        id: buildtest
+        run: |
+          xcodebuild test \
+            -project GeemuKore.xcodeproj \
+            -scheme GeemuKore \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0' \
+            -parallel-testing-enabled NO \
+            clean build |
+          xcpretty --simple --color
+        env: { NSUnbufferedIO: 'YES' }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TestResults
+          path: ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+
+      # ───────────── Comentario de resultado ─────────────
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' || github.event_name == 'issue_comment'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const outcome  = '${{ job.status }}'
+            const sha      = context.sha.substring(0,7)
+            const prNumber = (context.eventName === 'pull_request')
+              ? context.payload.number
+              : context.payload.issue.number
+
+            const emoji = outcome === 'success' ? '✅' : '❌'
+            const body  = `${emoji} **iOS CI** ${outcome === 'success' ? 'passed' : 'failed'} on \`${sha}\`.`
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: prNumber,
+              body
+            })
