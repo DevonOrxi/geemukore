@@ -1,7 +1,7 @@
 name: iOS CI
 
 on:
-  # ① Auto-run SOLO al abrir / re-abrir la PR
+  # ① Auto-run solo al abrir / re-abrir la PR
   pull_request:
     types: [opened, reopened]
     branches: [main]
@@ -16,11 +16,11 @@ on:
 jobs:
   test:
     runs-on: macos-15
-    permissions:
-      contents: read          # basta con leer el código
-      issues: write           # para crear comentarios en PR/issues
-      pull-requests: write    # opcional, también cubre comentarios en PR
     timeout-minutes: 45
+    permissions:
+      contents: write        # para publicar a gh-pages
+      issues: write          # crear / editar comentarios
+      pull-requests: write
 
     # ───────────── Filtro de ejecución ─────────────
     if: |
@@ -30,82 +30,164 @@ jobs:
         contains(github.event.comment.body, 'check pr') )
 
     steps:
-     # ───────────── Comentario de arranque ─────────────
-      - name: Comment CI started
-        if: github.event_name == 'pull_request' || github.event_name == 'issue_comment'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = (context.eventName === 'pull_request')
-              ? context.payload.number
-              : context.payload.issue.number
+    # ───────────── Comentario de arranque ─────────────
+    - name: Comment CI started
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const marker = '<!-- ios-ci-marker -->'
+          const sha    = context.sha.substring(0,7)
 
-            await github.rest.issues.createComment({
+          // 🔎 Localiza nº de PR según el tipo de evento
+          async function findPR () {
+            if (context.eventName === 'pull_request')
+              return context.payload.number
+
+            if (context.payload.issue?.pull_request)
+              return context.payload.issue.number
+
+            // workflow_run / dispatch / rerun → buscar por SHA
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
               owner: context.repo.owner,
               repo:  context.repo.repo,
-              issue_number: prNumber,
-              body: '🚀 **iOS CI** comenzando *build* + *tests*…'
+              commit_sha: context.sha
             })
-      
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+            return prs.length ? prs[0].number : null
+          }
 
-      - uses: maxim-lobanov/setup-xcode@v1
-        with: { xcode-version: 'latest-stable' }
+          const prNumber = await findPR()
+          if (!prNumber) { core.warning('PR not found'); return }
 
-      - name: Resolve Swift Packages
-        run: >
-          xcodebuild -resolvePackageDependencies
-          -project GeemuKore.xcodeproj
-          -scheme GeemuKore
+          // Comprueba si ya existe el comentario
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo:  context.repo.repo,
+            issue_number: prNumber
+          })
+          const existing = comments.find(c => c.body.includes(marker))
+          const body = `🚀 **iOS CI** comenzando *build* + *tests*…\n${marker}`
 
-      - name: Build & Test (iPhone 15 / iOS 18)
-        id: buildtest
-        run: |
-          xcodebuild test \
-            -project GeemuKore.xcodeproj \
-            -scheme GeemuKore \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0' \
-            -parallel-testing-enabled NO \
-            clean build |
-          xcpretty --simple --color
-        env: { NSUnbufferedIO: 'YES' }
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: TestResults
-          path: ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
-
-      - name: Publish coverage JSON
-        uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/main' && job.status == 'success'
-        with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
-          external_repository: ${{ github.repository }}
-          publish_dir: .
-          publish_branch: gh-pages
-          destination_dir: coverage
-          keep_files: true    # no borra otros assets
-
-      # ───────────── Comentario de resultado ─────────────
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' || github.event_name == 'issue_comment'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const outcome  = '${{ job.status }}'
-            const sha      = context.sha.substring(0,7)
-            const prNumber = (context.eventName === 'pull_request')
-              ? context.payload.number
-              : context.payload.issue.number
-
-            const emoji = outcome === 'success' ? '✅' : '❌'
-            const body  = `${emoji} **iOS CI** ${outcome === 'success' ? 'passed' : 'failed'} on \`${sha}\`.`
-
+          if (existing) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              comment_id: existing.id,
+              body
+            })
+          } else {
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo:  context.repo.repo,
               issue_number: prNumber,
               body
             })
+          }
+
+    # ───────────── Pipeline de build + test ─────────────
+    - uses: actions/checkout@v4
+      with: { fetch-depth: 0 }
+
+    - uses: maxim-lobanov/setup-xcode@v1
+      with: { xcode-version: 'latest-stable' }
+
+    - name: Resolve Swift Packages
+      run: >
+        xcodebuild -resolvePackageDependencies
+        -project GeemuKore.xcodeproj
+        -scheme GeemuKore
+
+    - name: Build & Test (iPhone 15 / iOS 18)
+      id: buildtest
+      run: |
+        xcodebuild test \
+          -project GeemuKore.xcodeproj \
+          -scheme GeemuKore \
+          -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.0' \
+          -parallel-testing-enabled NO \
+          -enableCodeCoverage YES \
+          clean build |
+        xcpretty --simple --color
+      env: { NSUnbufferedIO: 'YES' }
+
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: TestResults
+        path: ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+
+    # (Opcional) Generación y publicación de coverage.json
+    - name: Extract coverage percentage
+      id: coverage
+      run: |
+        RESULT_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.xcresult" -maxdepth 3 | head -n 1)
+        PERCENT=$(xcrun xccov view --report --json "$RESULT_PATH" | \
+                  jq '[.targets[].lineCoverage] | add / length * 100')
+        printf '{ "schemaVersion": 1, "label": "coverage", "message": "%0.1f%%", "color": "%s" }\n' \
+               "$PERCENT" "$( [ $(echo "$PERCENT > 80" | bc) -eq 1 ] && echo green || echo orange )" \
+               > coverage.json
+
+    - name: Publish coverage JSON
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main' && job.status == 'success'
+      with:
+        personal_token: ${{ secrets.GITHUB_TOKEN }}
+        external_repository: ${{ github.repository }}
+        publish_dir: .
+        publish_branch: gh-pages
+        destination_dir: coverage
+        keep_files: true
+
+    # ───────────── Comentario de resultado ─────────────
+    - name: Comment CI result
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const outcome = '${{ job.status }}'   // success / failure / cancelled
+          const sha     = context.sha.substring(0,7)
+          const emoji   = outcome === 'success' ? '✅'
+                       : outcome === 'failure' ? '❌'
+                       : '⚠️'
+          const marker  = '<!-- ios-ci-marker -->'
+
+          // misma util ▼
+          async function findPR () {
+            if (context.eventName === 'pull_request')
+              return context.payload.number
+            if (context.payload.issue?.pull_request)
+              return context.payload.issue.number
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              commit_sha: context.sha
+            })
+            return prs.length ? prs[0].number : null
+          }
+
+          const prNumber = await findPR()
+          if (!prNumber) { core.warning('PR not found'); return }
+
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo:  context.repo.repo,
+            issue_number: prNumber
+          })
+          const existing = comments.find(c => c.body.includes(marker))
+          const body = `${emoji} **iOS CI** ${outcome} on \`${sha}\`.\n${marker}`
+
+          if (existing) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              comment_id: existing.id,
+              body
+            })
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: prNumber,
+              body
+            })
+          }
