@@ -6,23 +6,28 @@
 //
 
 import SwiftUI
-import Combine
+import Observation
 
-final class CollectionCoordinator: ObservableObject {
-	@Published var path = NavigationPath()
-	
-	private var pathBinding: Binding<NavigationPath> {
-		Binding(
-			get: { self.path },
-			set: { self.path = $0 }
-		)
+@Observable
+final class CollectionCoordinator {
+	enum CollectionScene: Hashable {
+		// TODO: Cases
 	}
 	
-	func start() -> some View {
-		NavigationStack(path: pathBinding) {
+	private let rootPath: [CollectionScene] = []
+	private var path: [CollectionScene] = []
+	
+	var view: some View {
+		NavigationStack(
+			path: Binding(
+				get: { self.path },
+				set: { [unowned self] in self.path = $0 }
+			)
+		) {
 			EmptyView()
 		}
 	}
+	
 	func onTabDoubleTap() {
 		path.removeLast(path.count)
 	}

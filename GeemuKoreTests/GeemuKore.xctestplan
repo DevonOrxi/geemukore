@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "09283151-76BD-44A9-9D89-BDDE4DD9CFB0",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:GeemuKore.xcodeproj",
+      "identifier" : "F0E13FFB2E2A6ACA00E03DAA",
+      "name" : "GeemuKore"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:GeemuKore.xcodeproj",
+        "identifier" : "F0E1400A2E2A6ACB00E03DAA",
+        "name" : "GeemuKoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}
