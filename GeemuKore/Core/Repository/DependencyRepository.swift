@@ -11,4 +11,5 @@ protocol DependencyRepository {
 
 protocol ActionRepository {
 	var selectGameDetail: SelectGameDetail { get }
+	var fetchGameOverviews: FetchGameOverviewsServiceProtocol { get }
 }

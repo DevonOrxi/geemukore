@@ -16,9 +16,12 @@ final class ExploreCoordinator {
 	
 	private let rootPath: [ExploreScene] = []
 	private var path: [ExploreScene] = []
+	private var fetchGameOverviews: FetchGameOverviewsServiceProtocol
 	private var selectGameDetail: SelectGameDetail
 	
-	init (selectGameDetail: SelectGameDetail) {
+	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
+		 selectGameDetail: SelectGameDetail) {
+		self.fetchGameOverviews = fetchGameOverviews
 		self.selectGameDetail = selectGameDetail
 		setup()
 	}
@@ -30,7 +33,10 @@ final class ExploreCoordinator {
 				set: { [unowned self] in self.path = $0 }
 			)
 		) {
-			ExploreCoordinatorView(selectGameDetail: selectGameDetail)
+			ExploreCoordinatorView(
+				fetchGameOverviews: fetchGameOverviews,
+				selectGameDetail: selectGameDetail
+			)
 		}
 	}
 	

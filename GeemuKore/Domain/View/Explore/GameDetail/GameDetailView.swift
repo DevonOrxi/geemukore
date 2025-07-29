@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct GameDetailView: View {
-	@StateObject var viewModel: GameDetailViewModel
+	@State var viewModel: GameDetailViewModel
+	
+	init(viewModel: GameDetailViewModel) {
+		self.viewModel = viewModel
+	}
 	
 	var body: some View {
 		EmptyView()

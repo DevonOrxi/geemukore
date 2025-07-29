@@ -6,19 +6,21 @@
 //
 
 import Foundation
-import Combine
+import Observation
 
-@MainActor
-final class HomeViewModel: ObservableObject {
-    @Published private(set) var games: [GameOverviewModel] = []
-    @Published private(set) var isLoading = false
-    @Published var errorMessage: String?
+@Observable @MainActor
+final class HomeViewModel {
+    private(set) var games: [GameOverviewModel] = []
+    private(set) var isLoading = false
+    var errorMessage: String?
 
+	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
     private let selectGameDetail: SelectGameDetail
-    private var cancellables = Set<AnyCancellable>()
 
-	init(selectGameDetail: SelectGameDetail) {
+	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
+		 selectGameDetail: SelectGameDetail) {
         self.selectGameDetail = selectGameDetail
+		self.fetchGameOverviews = fetchGameOverviews
         Task { await fetchTrending() }
     }
 
@@ -26,41 +28,16 @@ final class HomeViewModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
 
-        do {
-            // 🔸AQUÍ llamaremos al cliente TGDB (mock por ahora)
-            try await Task.sleep(for: .seconds(1))   // simulamos red
-            games = Stub.games
-        } catch {
-			errorMessage = "No se pudieron obtener los datos: \(error.localizedDescription)"
-        }
+        let fetchResult = await fetchGameOverviews.fetch()
+		switch fetchResult {
+		case .success(let games):
+			self.games = games
+		case .failure(let error):
+			print("ERROR A TRATAR LUEGO")
+		}
     }
 
 	func select(_ game: GameOverviewModel) async {
 		await selectGameDetail.execute(for: game)
     }
-}
-
-private extension HomeViewModel {
-	enum Stub {
-		static let games: [GameOverviewModel] = [
-			GameOverviewModel(
-				id: 1,
-				title: "The Legend of Zelda: Breath of the Wild",
-				coverURL: URL(string: "https://picsum.photos/id/237/200/300"),
-				releaseDate: .createFrom(day: 1, month: 1, year: 2017)
-			),
-			GameOverviewModel(
-				id: 2,
-				title: "Hollow Knight",
-				coverURL: URL(string: "https://picsum.photos/id/1025/200/300"),
-				releaseDate: .createFrom(day: 1, month: 1, year: 2017)
-			),
-			GameOverviewModel(
-				id: 3,
-				 title: "Celeste",
-				 coverURL: URL(string: "https://picsum.photos/id/1005/200/300"),
-				 releaseDate: .createFrom(day: 1, month: 1, year: 2017)
-			)
-		]
-	}
 }

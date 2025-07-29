@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-	@StateObject var tabCoordinator = TabCoordinator()
+	@State var tabCoordinator = TabCoordinator()
 	
 	var body: some View {
 		TabView(selection: $tabCoordinator.currentTab) {
