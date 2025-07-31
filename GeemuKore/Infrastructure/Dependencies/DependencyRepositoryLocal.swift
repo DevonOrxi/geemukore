@@ -6,9 +6,20 @@
 //
 
 class DependencyRepositoryLocal: DependencyRepository {
-	lazy var actions: ActionRepository = ActionRepositoryLocal()
+	private let gameOverviewRepository = GameOverviewRepositoryStub()
+	
+	lazy var actions: ActionRepository = ActionRepositoryLocal(
+		gameOverviewRepository: gameOverviewRepository
+	)
 }
 
 class ActionRepositoryLocal: ActionRepository {
 	lazy var selectGameDetail: SelectGameDetail = SelectGameDetailLocal()
+	lazy var fetchGameOverviews: FetchGameOverviewsServiceProtocol = FetchGameOverviewsService(repository: gameOverviewRepository)
+	
+	private let gameOverviewRepository: GameOverviewRepository
+	
+	init(gameOverviewRepository: GameOverviewRepository) {
+		self.gameOverviewRepository = gameOverviewRepository
+	}
 }

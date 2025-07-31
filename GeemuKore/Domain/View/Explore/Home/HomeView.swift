@@ -8,30 +8,17 @@
 import SwiftUI
 
 struct HomeView: View {
-	@StateObject var viewModel: HomeViewModel
+	@State var viewModel: HomeViewModel
 	
 	var body: some View {
 		Group {
-			if viewModel.isLoading {
-				ProgressView("Loading…")
-			} else {
+			if !viewModel.isLoading {
 				gameListView
+			} else {
+				ProgressView("Loading…")
 			}
 		}
 		.navigationTitle("Explore")
-		.alert(
-			"Error",
-			isPresented: Binding(
-				get: { viewModel.errorMessage != nil },
-				set: { if !$0 { viewModel.errorMessage = nil } }
-			)
-		) {
-			// acciones (vacías → solo botón OK)
-		} message: {
-			if let msg = viewModel.errorMessage {
-				Text(msg)
-			}
-		}
 	}
 	
 	var gameListView: some View {
@@ -41,27 +28,58 @@ struct HomeView: View {
 					await viewModel.select(game)
 				}
 			} label: {
-				HStack {
-					AsyncImage(url: game.coverURL) { image in
-						image.resizable().aspectRatio(contentMode: .fill)
-					} placeholder: {
-						Color.gray.opacity(0.3)
-					}
-					.frame(width: 60, height: 90)
-					.cornerRadius(8)
-					
-					VStack(alignment: .leading, spacing: 4) {
-						Text(game.title)
-							.font(.headline)
-						if let date = game.releaseDate {
-							Text(String(date.year))
-								.font(.subheadline)
-								.foregroundStyle(.secondary)
-						}
-					}
-				}
+				gameCell(for: game)
 			}
 		}
 		.listStyle(.plain)
+	}
+	
+	@ViewBuilder
+	func gameCell(for game: GameOverviewModel) -> some View {
+		HStack {
+			gameCellCover(using: game.coverURL)
+			gameCellInfo(title: game.title, releaseDate: .createFrom(day: 1, month: 1, year: 2017))
+		}
+	}
+	
+	@ViewBuilder
+	func gameCellCover(using coverURL: URL?) -> some View {
+		AsyncImage(url: coverURL) { image in
+			image
+				.resizable()
+				.aspectRatio(contentMode: .fill)
+		} placeholder: {
+			Color.gray
+				.opacity(0.3)
+		}
+		.frame(width: 60, height: 90)
+		.cornerRadius(8)
+	}
+	
+	@ViewBuilder
+	func gameCellInfo(title: String, releaseDate: Date?) -> some View {
+		VStack(alignment: .leading, spacing: 4) {
+			Text(title)
+				.font(.headline)
+			
+			if let releaseDate {
+				Text(String(releaseDate.year))
+					.font(.subheadline)
+					.foregroundStyle(.secondary)
+			}
+		}
+	}
+}
+
+#Preview {
+	HomeView(viewModel: .preview)
+}
+
+private extension HomeViewModel {
+	static var preview: HomeViewModel {
+		HomeViewModel(
+			fetchGameOverviews: FetchGameOverviewsPreviewStub(),
+			selectGameDetail: SelectGameDetailPreviewStub()
+		)
 	}
 }

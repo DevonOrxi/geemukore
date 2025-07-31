@@ -5,10 +5,10 @@
 //  Created by Ariel Cid on 26/07/2025.
 //
 
-import SwiftUI
+import Observation
 
-@MainActor
-final class GameDetailViewModel: ObservableObject {
+@Observable @MainActor
+final class GameDetailViewModel {
 	private let model: GameDetailModel
 	
 	init(model: GameDetailModel) {

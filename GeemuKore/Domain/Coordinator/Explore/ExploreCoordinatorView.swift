@@ -9,9 +9,12 @@ import SwiftUI
 
 struct ExploreCoordinatorView: View {
 	typealias ExploreScene = ExploreCoordinator.ExploreScene
+	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
 	private let selectGameDetail: SelectGameDetail
 	
-	init(selectGameDetail: SelectGameDetail) {
+	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
+		 selectGameDetail: SelectGameDetail) {
+		self.fetchGameOverviews = fetchGameOverviews
 		self.selectGameDetail = selectGameDetail
 	}
 	
@@ -33,6 +36,7 @@ struct ExploreCoordinatorView: View {
 	
 	private var homeView: some View {
 		let viewModel = HomeViewModel(
+			fetchGameOverviews: fetchGameOverviews,
 			selectGameDetail: selectGameDetail
 		)
 		return HomeView(viewModel: viewModel)
