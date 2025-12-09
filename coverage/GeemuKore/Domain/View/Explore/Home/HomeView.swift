@@ -1,0 +1,85 @@
+//
+//  HomeView.swift
+//  GeemuKore
+//
+//  Created by Ariel Cid on 18/07/2025.
+//
+
+import SwiftUI
+
+struct HomeView: View {
+	@State var viewModel: HomeViewModel
+	
+	var body: some View {
+		Group {
+			if !viewModel.isLoading {
+				gameListView
+			} else {
+				ProgressView("Loading…")
+			}
+		}
+		.navigationTitle("Explore")
+	}
+	
+	var gameListView: some View {
+		List(viewModel.games) { game in
+			Button {
+				Task {
+					await viewModel.select(game)
+				}
+			} label: {
+				gameCell(for: game)
+			}
+		}
+		.listStyle(.plain)
+	}
+	
+	@ViewBuilder
+	func gameCell(for game: GameOverviewModel) -> some View {
+		HStack {
+			gameCellCover(using: game.coverURL)
+			gameCellInfo(title: game.title, releaseDate: .createFrom(day: 1, month: 1, year: 2017))
+		}
+	}
+	
+	@ViewBuilder
+	func gameCellCover(using coverURL: URL?) -> some View {
+		AsyncImage(url: coverURL) { image in
+			image
+				.resizable()
+				.aspectRatio(contentMode: .fill)
+		} placeholder: {
+			Color.gray
+				.opacity(0.3)
+		}
+		.frame(width: 60, height: 90)
+		.cornerRadius(8)
+	}
+	
+	@ViewBuilder
+	func gameCellInfo(title: String, releaseDate: Date?) -> some View {
+		VStack(alignment: .leading, spacing: 4) {
+			Text(title)
+				.font(.headline)
+			
+			if let releaseDate {
+				Text(String(releaseDate.year))
+					.font(.subheadline)
+					.foregroundStyle(.secondary)
+			}
+		}
+	}
+}
+
+#Preview {
+	HomeView(viewModel: .preview)
+}
+
+private extension HomeViewModel {
+	static var preview: HomeViewModel {
+		HomeViewModel(
+			fetchGameOverviews: FetchGameOverviewsPreviewStub(),
+			selectGameDetail: SelectGameDetailPreviewStub()
+		)
+	}
+}
