@@ -9,10 +9,16 @@
 
 class GameOverviewRepositorySpy: GameOverviewRepository {
 	var getCalledTimes = 0
-	var returnResult: Result<[GeemuKore.GameOverviewDTO], GKError> = .failure(.unknownError)
+	var returnResult: Result<[GameOverviewDTO], GKError> = .failure(GKError(.unknownError))
 	
-	func get() async -> Result<[GeemuKore.GameOverviewDTO], GeemuKore.GKError> {
+	func get() async throws -> [GameOverviewDTO] {
 		getCalledTimes += 1
-		return returnResult
+		
+		switch returnResult {
+		case .success(let value):
+		return value
+		case .failure(let error):
+		throw error
+		}
 	}
 }

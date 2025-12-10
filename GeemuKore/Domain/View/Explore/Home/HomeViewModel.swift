@@ -28,12 +28,11 @@ final class HomeViewModel {
         isLoading = true
         defer { isLoading = false }
 
-        let fetchResult = await fetchGameOverviews.fetch()
-		switch fetchResult {
-		case .success(let games):
+		do {
+			let games = try await fetchGameOverviews.fetch()
 			self.games = games
-		case .failure(let error):
-			print("ERROR A TRATAR LUEGO")
+		} catch {
+			print("HANDLE ERROR PAGE")
 		}
     }
 

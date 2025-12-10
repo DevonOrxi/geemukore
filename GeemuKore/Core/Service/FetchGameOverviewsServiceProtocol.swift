@@ -6,5 +6,5 @@
 //
 
 protocol FetchGameOverviewsServiceProtocol {
-	func fetch() async -> Result<[GameOverviewModel], GKError>
+	func fetch() async throws -> [GameOverviewModel]
 }

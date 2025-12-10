@@ -6,7 +6,7 @@
 //
 
 protocol GameOverviewRepository {
-	func get() async -> Result<[GameOverviewDTO], GKError>
+	func get() async throws -> [GameOverviewDTO]
 }
 
 struct GameOverviewDTO: Decodable, Equatable {
@@ -19,5 +19,4 @@ struct GameOverviewDTO: Decodable, Equatable {
 struct ReleaseDateDTO: Decodable {
 	let id: Int
 	let date: Int?
-	let human: String?
 }

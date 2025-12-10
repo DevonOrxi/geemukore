@@ -6,8 +6,8 @@
 //
 
 class GameOverviewRepositoryStub: GameOverviewRepository {
-	func get() async -> Result<[GameOverviewDTO], GKError> {
-		.success([
+	func get() async throws -> [GameOverviewDTO] {
+		[
 			GameOverviewDTO(
 				id: 1,
 				name: "The Legend of Zelda: Breath of the Wild",
@@ -44,6 +44,6 @@ class GameOverviewRepositoryStub: GameOverviewRepository {
 //				coverURL: URL(string: "https://picsum.photos/id/1005/200/300"),
 //				releaseDate: .createFrom(day: 1, month: 1, year: 2017)
 //			)
-		])
+		]
 	}
 }
