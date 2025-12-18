@@ -5,7 +5,7 @@
 //  Created by Ariel Cid on 27/07/2025.
 //
 
-class GameOverviewRepositoryStub: GameOverviewRepository {
+final class GameOverviewRepositoryStub: GameOverviewRepositoryProtocol {
 	func get() async throws -> [GameOverviewDTO] {
 		[
 			GameOverviewDTO(

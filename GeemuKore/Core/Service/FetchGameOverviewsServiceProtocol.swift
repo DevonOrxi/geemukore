@@ -5,6 +5,7 @@
 //  Created by Ariel Cid on 27/07/2025.
 //
 
-protocol FetchGameOverviewsServiceProtocol {
+protocol FetchGameOverviewsServiceProtocol: Sendable {
 	func fetch() async throws -> [GameOverviewModel]
 }
+

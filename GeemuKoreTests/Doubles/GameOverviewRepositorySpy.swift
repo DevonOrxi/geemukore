@@ -7,18 +7,42 @@
 
 @testable import GeemuKore
 
-class GameOverviewRepositorySpy: GameOverviewRepository {
-	var getCalledTimes = 0
-	var returnResult: Result<[GameOverviewDTO], GKError> = .failure(GKError(.unknownError))
+final class GameOverviewRepositorySpy: GameOverviewRepositoryProtocol {
+	
+	private actor State {
+		var getCalledTimes = 0
+		var returnResult: Result<[GameOverviewDTO], GKError> = .failure(GKError(.unknownError))
+		
+		func recordGetCall() {
+			getCalledTimes += 1
+		}
+		
+		func setReturnResult(_ newResult: Result<[GameOverviewDTO], GKError>) {
+			returnResult = newResult
+		}
+	}
+	
+	private let state = State()
 	
 	func get() async throws -> [GameOverviewDTO] {
-		getCalledTimes += 1
+		await state.recordGetCall()
 		
-		switch returnResult {
+		let result = await state.returnResult
+		switch result {
 		case .success(let value):
-		return value
+			return value
 		case .failure(let error):
-		throw error
+			throw error
 		}
+	}
+	
+	// MARK: - Test Helpers
+	
+	func getCalledTimes() async -> Int {
+		await state.getCalledTimes
+	}
+	
+	func setReturnResult(_ result: Result<[GameOverviewDTO], GKError>) async {
+		await state.setReturnResult(result)
 	}
 }

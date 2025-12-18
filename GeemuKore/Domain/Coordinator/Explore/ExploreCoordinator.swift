@@ -8,7 +8,7 @@
 import SwiftUI
 import Observation
 
-@Observable
+@Observable @MainActor
 final class ExploreCoordinator {
 	enum ExploreScene: Hashable {
 		case detail(GameDetailModel)
@@ -16,14 +16,12 @@ final class ExploreCoordinator {
 	
 	private let rootPath: [ExploreScene] = []
 	private var path: [ExploreScene] = []
-	private var fetchGameOverviews: FetchGameOverviewsServiceProtocol
-	private var selectGameDetail: SelectGameDetail
+	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
+	private let fetchGameDetail: FetchGameDetailActionProtocol
 	
-	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
-		 selectGameDetail: SelectGameDetail) {
-		self.fetchGameOverviews = fetchGameOverviews
-		self.selectGameDetail = selectGameDetail
-		setup()
+	init(dependencies: DependencyRepositoryProtocol) {
+		self.fetchGameOverviews = dependencies.actions.fetchGameOverviews
+		self.fetchGameDetail = dependencies.actions.fetchGameDetail
 	}
 	
 	var view: some View {
@@ -35,14 +33,13 @@ final class ExploreCoordinator {
 		) {
 			ExploreCoordinatorView(
 				fetchGameOverviews: fetchGameOverviews,
-				selectGameDetail: selectGameDetail
+				fetchGameDetail: fetchGameDetail,
+				onGameSelected: { [weak self] game in
+					guard let self else { return }
+					let gameDetail = await self.fetchGameDetail.execute(for: game)
+					self.goToGameDetailView(for: gameDetail)
+				}
 			)
-		}
-	}
-	
-	private func setup() {
-		selectGameDetail.setNavigationToGameDetail{ [weak self] game in
-			self?.goToGameDetailView(for: game)
 		}
 	}
 	

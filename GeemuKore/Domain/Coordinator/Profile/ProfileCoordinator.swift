@@ -8,7 +8,7 @@
 import SwiftUI
 import Observation
 
-@Observable
+@Observable @MainActor
 final class ProfileCoordinator {
 	enum ProfileScene: Hashable {
 		// TODO: Cases

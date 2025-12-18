@@ -8,7 +8,7 @@
 #if DEBUG
 import Foundation
 
-class FetchGameOverviewsPreviewStub: FetchGameOverviewsServiceProtocol {
+final class FetchGameOverviewsPreviewStub: FetchGameOverviewsServiceProtocol {
 	func fetch() async throws -> [GameOverviewModel] {
 		[
 			GameOverviewModel(

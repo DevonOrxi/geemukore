@@ -7,20 +7,22 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable @MainActor
 final class HomeViewModel {
     private(set) var games: [GameOverviewModel] = []
     private(set) var isLoading = false
-    var errorMessage: String?
+    private(set) var errorMessage: String?
 
 	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
-    private let selectGameDetail: SelectGameDetail
+	private let onGameSelected: @MainActor (GameOverviewModel) async -> Void
 
 	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
-		 selectGameDetail: SelectGameDetail) {
-        self.selectGameDetail = selectGameDetail
+		 onGameSelected: @escaping @MainActor (GameOverviewModel) async -> Void
+	) {
 		self.fetchGameOverviews = fetchGameOverviews
+		self.onGameSelected = onGameSelected
         Task { await fetchTrending() }
     }
 
@@ -37,6 +39,6 @@ final class HomeViewModel {
     }
 
 	func select(_ game: GameOverviewModel) async {
-		await selectGameDetail.execute(for: game)
+		await onGameSelected(game)
     }
 }

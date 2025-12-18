@@ -5,7 +5,7 @@
 //  Created by Ariel Cid on 27/07/2025.
 //
 
-protocol GameOverviewRepository {
+protocol GameOverviewRepositoryProtocol: Sendable {
 	func get() async throws -> [GameOverviewDTO]
 }
 

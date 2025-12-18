@@ -29,14 +29,14 @@ class FetchGameOverviewsServiceTests: XCTestCase {
 	
 	func test_FetchGameOverviewsStub_SettingNil() async throws {
 		givenASUT()
-		whenMockingRepository(throwing: GKError(.httpError))
+		await whenMockingRepository(throwing: GKError(.httpError))
 		await whenFetching()
 		thenFetchReturnsFailure(error: GKError(.httpError))
 	}
 	
 	func test_FetchGameOverviewsStub_SettingValidResponse() async throws {
 		givenASUT()
-		whenMockingRepository(returning: [
+		await whenMockingRepository(returning: [
 			GameOverviewDTO(
 				id: 1,
 				name: "Placeholder",
@@ -62,12 +62,12 @@ extension FetchGameOverviewsServiceTests {
 		}
 	}
 	
-	private func whenMockingRepository(returning value: [GameOverviewDTO]) {
-		repositorySpy.returnResult = .success(value)
+	private func whenMockingRepository(returning value: [GameOverviewDTO]) async {
+		await repositorySpy.setReturnResult(.success(value))
 	}
 	
-	private func whenMockingRepository(throwing error: GKError) {
-		repositorySpy.returnResult = .failure(error)
+	private func whenMockingRepository(throwing error: GKError) async {
+		await repositorySpy.setReturnResult(.failure(error))
 	}
 	
 	private func thenFetchReturnsFailure(error: GKError) {

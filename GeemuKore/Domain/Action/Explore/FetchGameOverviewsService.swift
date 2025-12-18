@@ -7,10 +7,10 @@
 
 import Foundation
 
-class FetchGameOverviewsService: FetchGameOverviewsServiceProtocol {
-	private let repository: GameOverviewRepository
+final class FetchGameOverviewsService: FetchGameOverviewsServiceProtocol, Sendable {
+	private let repository: GameOverviewRepositoryProtocol
 	
-	init(repository: GameOverviewRepository) {
+	init(repository: GameOverviewRepositoryProtocol) {
 		self.repository = repository
 	}
 	
