@@ -5,8 +5,8 @@
 //  Created by Ariel Cid on 27/07/2025.
 //
 
-protocol GameOverviewRepository {
-	func get() async -> Result<[GameOverviewDTO], GKError>
+protocol GameOverviewRepositoryProtocol: Sendable {
+	func get() async throws -> [GameOverviewDTO]
 }
 
 struct GameOverviewDTO: Decodable, Equatable {
@@ -19,5 +19,4 @@ struct GameOverviewDTO: Decodable, Equatable {
 struct ReleaseDateDTO: Decodable {
 	let id: Int
 	let date: Int?
-	let human: String?
 }

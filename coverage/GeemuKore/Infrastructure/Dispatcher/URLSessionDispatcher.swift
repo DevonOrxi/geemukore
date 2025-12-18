@@ -13,10 +13,9 @@ class URLSessionDispatcher: DispatcherProtocol {
 		body: String,
 		clientId: String,
 		accessToken: String
-	) async -> Result<T, GKError> {
-		
+	) async throws -> T {
 		guard let url = URL(string: endpoint) else {
-			return .failure(.invalidURL)
+			throw GKError(.invalidURL)
 		}
 		
 		var request = URLRequest(url: url)
@@ -27,22 +26,18 @@ class URLSessionDispatcher: DispatcherProtocol {
 		request.setValue(clientId, forHTTPHeaderField: "Client-ID")
 		request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 		
+		let (data, response) = try await URLSession.shared.data(for: request)
+		
+		guard let httpResponse = response as? HTTPURLResponse,
+			  httpResponse.statusCode == 200 else {
+			throw GKError(.httpInvalidStatus)
+		}
+		
 		do {
-			let (data, response) = try await URLSession.shared.data(for: request)
-			
-			guard let httpResponse = response as? HTTPURLResponse,
-				  httpResponse.statusCode == 200 else {
-				return .failure(.httpInvalidStatus)
-			}
-			
-			do {
-				let decoded = try JSONDecoder().decode(T.self, from: data)
-				return .success(decoded)
-			} catch {
-				return .failure(.decodeError)
-			}
+			let decoded = try JSONDecoder().decode(T.self, from: data)
+			return decoded
 		} catch {
-			return .failure(.httpError)
+			throw GKError(.decodeError, underlyingError: error)
 		}
 	}
 }

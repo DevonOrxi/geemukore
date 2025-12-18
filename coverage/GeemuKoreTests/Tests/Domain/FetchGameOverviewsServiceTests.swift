@@ -10,38 +10,40 @@ import XCTest
 
 class FetchGameOverviewsServiceTests: XCTestCase {
 	private var sut: FetchGameOverviewsService!
-	private var fetchResult: Result<[GameOverviewModel], GKError>!
+	private var fetchResult: [GameOverviewModel]?
+	private var fetchError: GKError?
 	private var repositorySpy: GameOverviewRepositorySpy!
 	
 	override func setUp() {
 		sut = nil
 		fetchResult = nil
+		fetchError = nil
 		repositorySpy = GameOverviewRepositorySpy()
 	}
 	
 	func test_FetchGameOverviewsStub() async throws {
 		givenASUT()
 		await whenFetching()
-		thenFetchReturnsFailure(error: .unknownError)
+		thenFetchReturnsFailure(error: GKError(.unknownError))
 	}
 	
 	func test_FetchGameOverviewsStub_SettingNil() async throws {
 		givenASUT()
-		whenMockingRepository(with: .failure(.httpError))
+		await whenMockingRepository(throwing: GKError(.httpError))
 		await whenFetching()
-		thenFetchReturnsFailure(error: .httpError)
+		thenFetchReturnsFailure(error: GKError(.httpError))
 	}
 	
 	func test_FetchGameOverviewsStub_SettingValidResponse() async throws {
 		givenASUT()
-		whenMockingRepository(with: .success([
+		await whenMockingRepository(returning: [
 			GameOverviewDTO(
 				id: 1,
 				name: "Placeholder",
 				releaseDate: nil,
 				artworks: nil
 			)
-		]))
+		])
 		await whenFetching()
 		thenFetchReturnsSuccess(with: [expectedModel])
 	}
@@ -53,19 +55,27 @@ extension FetchGameOverviewsServiceTests {
 	}
 	
 	private func whenFetching() async {
-		fetchResult = await sut.fetch()
+		do {
+			fetchResult = try await sut.fetch()
+		} catch {
+			fetchError = error as? GKError
+		}
 	}
 	
-	private func whenMockingRepository(with result: Result<[GameOverviewDTO], GKError>) {
-		repositorySpy.returnResult = result
+	private func whenMockingRepository(returning value: [GameOverviewDTO]) async {
+		await repositorySpy.setReturnResult(.success(value))
+	}
+	
+	private func whenMockingRepository(throwing error: GKError) async {
+		await repositorySpy.setReturnResult(.failure(error))
 	}
 	
 	private func thenFetchReturnsFailure(error: GKError) {
-		XCTAssertEqual(fetchResult, .failure(error))
+		XCTAssertEqual(fetchError, error)
 	}
 	
 	private func thenFetchReturnsSuccess(with result: [GameOverviewModel]) {
-		XCTAssertEqual(fetchResult, .success(result))
+		XCTAssertEqual(fetchResult, result)
 	}
 	
 	private var expectedModel: GameOverviewModel {

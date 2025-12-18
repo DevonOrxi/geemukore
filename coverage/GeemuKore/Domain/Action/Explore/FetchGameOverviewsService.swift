@@ -7,25 +7,23 @@
 
 import Foundation
 
-class FetchGameOverviewsService: FetchGameOverviewsServiceProtocol {
-	private let repository: GameOverviewRepository
+final class FetchGameOverviewsService: FetchGameOverviewsServiceProtocol, Sendable {
+	private let repository: GameOverviewRepositoryProtocol
 	
-	init(repository: GameOverviewRepository) {
+	init(repository: GameOverviewRepositoryProtocol) {
 		self.repository = repository
 	}
 	
-	func fetch() async -> Result<[GameOverviewModel], GKError> {
-		await repository.get()
-			.map { result in
-				result.map {
-					GameOverviewModel(
-						id: $0.id,
-						title: $0.name,
-						coverURL: nil,
-						releaseDate: nil
-						// TODO: Map these
-					)
-				}
+	func fetch() async throws -> [GameOverviewModel] {
+		try await repository.get()
+			.map {
+				GameOverviewModel(
+					id: $0.id,
+					title: $0.name,
+					coverURL: nil,
+					releaseDate: nil
+					// TODO: Map these
+				)
 			}
 	}
 }

@@ -15,16 +15,16 @@ enum GKErrorCode: Int {
 
 struct GKError: Error {
 	let code: GKErrorCode
+	let underlyingError: Error?
 	
-	init(_ code: GKErrorCode) {
+	init(_ code: GKErrorCode, underlyingError: Error? = nil) {
 		self.code = code
+		self.underlyingError = underlyingError
 	}
-	
-	static var httpError: GKError { .init(.httpError )}
-	static var invalidURL: GKError { .init(.invalidURL) }
-	static var decodeError: GKError { .init(.decodeError) }
-	static var httpInvalidStatus: GKError { .init(.httpInvalidStatus) }
-	static var unknownError: GKError { .init(.unknownError) }
 }
 
-extension GKError: Equatable {}
+extension GKError: Equatable {
+	static func == (lhs: GKError, rhs: GKError) -> Bool {
+		lhs.code == rhs.code
+	}
+}
