@@ -8,21 +8,18 @@
 import SwiftUI
 import Combine
 
-@Observable
+@Observable @MainActor
 final class TabCoordinator {
 	var currentTab: TabElement = .explore
 
 	private(set) var explore: ExploreCoordinator
 	private(set) var collection: CollectionCoordinator
 	private(set) var profile: ProfileCoordinator
-	private let dependencies: DependencyRepository
+	private let dependencies: DependencyRepositoryProtocol
 	
-	init(dependencies: DependencyRepository = DependencyRepositoryLocal()) {
+	init(dependencies: DependencyRepositoryProtocol = DependencyRepository()) {
 		self.dependencies = dependencies
-		self.explore = .init(
-			fetchGameOverviews: dependencies.actions.fetchGameOverviews,
-			selectGameDetail: dependencies.actions.selectGameDetail
-		)
+		self.explore = .init(dependencies: dependencies)
 		self.collection = .init()
 		self.profile = .init()
 	}

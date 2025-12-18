@@ -44,16 +44,9 @@ struct HomeView: View {
 	
 	@ViewBuilder
 	func gameCellCover(using coverURL: URL?) -> some View {
-		AsyncImage(url: coverURL) { image in
-			image
-				.resizable()
-				.aspectRatio(contentMode: .fill)
-		} placeholder: {
-			Color.gray
-				.opacity(0.3)
-		}
-		.frame(width: 60, height: 90)
-		.cornerRadius(8)
+		RemoteImage(url: coverURL)
+			.frame(width: 60, height: 90)
+			.cornerRadius(8)
 	}
 	
 	@ViewBuilder
@@ -79,7 +72,7 @@ private extension HomeViewModel {
 	static var preview: HomeViewModel {
 		HomeViewModel(
 			fetchGameOverviews: FetchGameOverviewsPreviewStub(),
-			selectGameDetail: SelectGameDetailPreviewStub()
+			onGameSelected: { _ in }
 		)
 	}
 }

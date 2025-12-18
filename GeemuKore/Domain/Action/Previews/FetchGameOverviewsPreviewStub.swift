@@ -8,9 +8,9 @@
 #if DEBUG
 import Foundation
 
-class FetchGameOverviewsPreviewStub: FetchGameOverviewsServiceProtocol {
-	func fetch() async -> Result<[GameOverviewModel], GKError> {
-		.success([
+final class FetchGameOverviewsPreviewStub: FetchGameOverviewsServiceProtocol {
+	func fetch() async throws -> [GameOverviewModel] {
+		[
 			GameOverviewModel(
 				id: 1,
 				title: "The Legend of Zelda: Breath of the Wild",
@@ -29,7 +29,7 @@ class FetchGameOverviewsPreviewStub: FetchGameOverviewsServiceProtocol {
 				coverURL: URL(string: "https://picsum.photos/id/1005/200/300"),
 				releaseDate: .createFrom(day: 1, month: 1, year: 2017)
 			)
-		])
+		]
 	}
 }
 #endif

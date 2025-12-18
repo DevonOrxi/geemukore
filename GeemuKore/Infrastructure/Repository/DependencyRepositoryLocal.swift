@@ -5,21 +5,22 @@
 //  Created by Ariel Cid on 26/07/2025.
 //
 
-class DependencyRepositoryLocal: DependencyRepository {
+final class DependencyRepository: DependencyRepositoryProtocol {
 	private let gameOverviewRepository = GameOverviewRepositoryStub()
 	
-	lazy var actions: ActionRepository = ActionRepositoryLocal(
+	lazy var actions: ActionRepositoryProtocol = ActionRepository(
 		gameOverviewRepository: gameOverviewRepository
 	)
 }
 
-class ActionRepositoryLocal: ActionRepository {
-	lazy var selectGameDetail: SelectGameDetail = SelectGameDetailLocal()
+final class ActionRepository: ActionRepositoryProtocol {
+	lazy var fetchGameDetail: FetchGameDetailActionProtocol = FetchGameDetailAction()
 	lazy var fetchGameOverviews: FetchGameOverviewsServiceProtocol = FetchGameOverviewsService(repository: gameOverviewRepository)
 	
-	private let gameOverviewRepository: GameOverviewRepository
+	private let gameOverviewRepository: GameOverviewRepositoryProtocol
 	
-	init(gameOverviewRepository: GameOverviewRepository) {
+	init(gameOverviewRepository: GameOverviewRepositoryProtocol) {
 		self.gameOverviewRepository = gameOverviewRepository
 	}
 }
+
