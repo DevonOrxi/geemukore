@@ -24,9 +24,7 @@ struct HomeView: View {
 	var gameListView: some View {
 		List(viewModel.games) { game in
 			Button {
-				Task {
-					await viewModel.select(game)
-				}
+				viewModel.select(game)
 			} label: {
 				gameCell(for: game)
 			}
@@ -71,7 +69,8 @@ struct HomeView: View {
 private extension HomeViewModel {
 	static var preview: HomeViewModel {
 		HomeViewModel(
-			fetchGameOverviews: FetchGameOverviewsPreviewStub(),
+			getGameOverviews: GetGameOverviewsPreviewStub(),
+			getGameDetail: GetGameDetailPreviewStub(),
 			onGameSelected: { _ in }
 		)
 	}

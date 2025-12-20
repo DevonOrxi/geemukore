@@ -9,16 +9,16 @@ import SwiftUI
 
 struct ExploreCoordinatorView: View {
 	typealias ExploreScene = ExploreCoordinator.ExploreScene
-	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
-	private let fetchGameDetail: FetchGameDetailActionProtocol
-	private let onGameSelected: @MainActor (GameOverviewModel) async -> Void
+	private let getGameOverviews: GetGameOverviewsActionProtocol
+	private let getGameDetail: GetGameDetailActionProtocol
+	private let onGameSelected: @MainActor (GameDetailModel) -> Void
 	
-	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
-		 fetchGameDetail: FetchGameDetailActionProtocol,
-		 onGameSelected: @escaping @MainActor (GameOverviewModel) async -> Void
+	init(getGameOverviews: GetGameOverviewsActionProtocol,
+		 getGameDetail: GetGameDetailActionProtocol,
+		 onGameSelected: @escaping @MainActor (GameDetailModel) -> Void
 	) {
-		self.fetchGameOverviews = fetchGameOverviews
-		self.fetchGameDetail = fetchGameDetail
+		self.getGameOverviews = getGameOverviews
+		self.getGameDetail = getGameDetail
 		self.onGameSelected = onGameSelected
 	}
 	
@@ -40,7 +40,8 @@ struct ExploreCoordinatorView: View {
 	
 	private var homeView: some View {
 		let viewModel = HomeViewModel(
-			fetchGameOverviews: fetchGameOverviews,
+			getGameOverviews: getGameOverviews,
+			getGameDetail: getGameDetail,
 			onGameSelected: onGameSelected
 		)
 		return HomeView(viewModel: viewModel)

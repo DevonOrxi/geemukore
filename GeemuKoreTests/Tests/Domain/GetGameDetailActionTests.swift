@@ -1,5 +1,5 @@
 //
-//  FetchGameDetailActionTests.swift
+//  GetGameDetailActionTests.swift
 //  GeemuKore
 //
 //  Created by Ariel Cid on 26/07/2025.
@@ -10,9 +10,9 @@ import Foundation
 import XCTest
 @testable import GeemuKore
 
-final class FetchGameDetailActionTests: XCTestCase {
-	private var sut: FetchGameDetailAction!
-	private var result: GameDetailModel!
+final class GetGameDetailActionTests: XCTestCase {
+	private var sut: GetGameDetailAction!
+	private var result: Result<GameDetailModel, GKError>!
 	
 	override func setUp() {
 		super.setUp()
@@ -21,29 +21,33 @@ final class FetchGameDetailActionTests: XCTestCase {
 		result = nil
 	}
 	
-	
 	func test_shouldReturnValue() async {
 		givenSUT()
 		await whenExecuting(game: TestModels.inputGameOverview)
-		thenItReturnsResult(TestModels.outputGameDetail)
+		thenItReturnsResult(.success(TestModels.outputGameDetail))
 	}
 }
 
-extension FetchGameDetailActionTests {
+extension GetGameDetailActionTests {
 	private func givenSUT() {
-		sut = FetchGameDetailAction()
+		sut = GetGameDetailAction()
 	}
 	
 	private func whenExecuting(game: GameOverviewModel) async {
-		result = await sut.execute(for: game)
+		do {
+			let detail = try await sut.execute(for: game)
+			result = .success(detail)
+		} catch {
+			result = .failure(GKError(.unknownError, underlyingError: error))
+		}
 	}
 	
-	private func thenItReturnsResult(_ expectedResult: GameDetailModel) {
+	private func thenItReturnsResult(_ expectedResult: Result<GameDetailModel, GKError>) {
 		XCTAssertEqual(result, expectedResult)
 	}
 }
 
-private extension FetchGameDetailActionTests {
+private extension GetGameDetailActionTests {
 	struct TestModels {
 		static var inputGameOverview: GameOverviewModel {
 			GameOverviewModel(

@@ -7,15 +7,15 @@
 
 import Foundation
 
-final class FetchGameDetailAction: FetchGameDetailActionProtocol {
+final class GetGameDetailAction: GetGameDetailActionProtocol {
 	// TODO: Usar ID solamente
-	func execute(for game: GameOverviewModel) async -> GameDetailModel {
+	func execute(for game: GameOverviewModel) async throws -> GameDetailModel {
 		// TODO: Fetch en API
 		let gameDetail = GameDetailModel(
 			id: game.id,
 			title: game.title,
 			coverURL: game.coverURL,
-			releaseDate: game.releaseDate
+			firstReleaseDate: game.releaseDate
 		)
 		return gameDetail
 	}

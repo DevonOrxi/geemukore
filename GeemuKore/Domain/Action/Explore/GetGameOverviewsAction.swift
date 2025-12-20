@@ -1,5 +1,5 @@
 //
-//  FetchGameOverviewsService.swift
+//  GetGameOverviewsService.swift
 //  GeemuKore
 //
 //  Created by Ariel Cid on 27/07/2025.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-final class FetchGameOverviewsService: FetchGameOverviewsServiceProtocol, Sendable {
+final class GetGameOverviewsAction: GetGameOverviewsActionProtocol, Sendable {
 	private let repository: GameOverviewRepositoryProtocol
 	
 	init(repository: GameOverviewRepositoryProtocol) {
 		self.repository = repository
 	}
 	
-	func fetch() async throws -> [GameOverviewModel] {
+	func execute() async throws -> [GameOverviewModel] {
 		try await repository.get()
 			.map {
 				GameOverviewModel(

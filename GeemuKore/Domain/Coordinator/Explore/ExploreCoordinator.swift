@@ -16,12 +16,12 @@ final class ExploreCoordinator {
 	
 	private let rootPath: [ExploreScene] = []
 	private var path: [ExploreScene] = []
-	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
-	private let fetchGameDetail: FetchGameDetailActionProtocol
+	private let getGameOverviews: GetGameOverviewsActionProtocol
+	private let fetchGameDetail: GetGameDetailActionProtocol
 	
 	init(dependencies: DependencyRepositoryProtocol) {
-		self.fetchGameOverviews = dependencies.actions.fetchGameOverviews
-		self.fetchGameDetail = dependencies.actions.fetchGameDetail
+		self.getGameOverviews = dependencies.actions.getGameOverviews
+		self.fetchGameDetail = dependencies.actions.getGameDetail
 	}
 	
 	var view: some View {
@@ -32,12 +32,11 @@ final class ExploreCoordinator {
 			)
 		) {
 			ExploreCoordinatorView(
-				fetchGameOverviews: fetchGameOverviews,
-				fetchGameDetail: fetchGameDetail,
+				getGameOverviews: getGameOverviews,
+				getGameDetail: fetchGameDetail,
 				onGameSelected: { [weak self] game in
 					guard let self else { return }
-					let gameDetail = await self.fetchGameDetail.execute(for: game)
-					self.goToGameDetailView(for: gameDetail)
+					self.goToGameDetailView(for: game)
 				}
 			)
 		}

@@ -1,0 +1,31 @@
+//
+//  GameOverviewRepositoryStub.swift
+//  GeemuKore
+//
+//  Created by Ariel Cid on 27/07/2025.
+//
+
+final class GameOverviewRepositoryStub: GameOverviewRepositoryProtocol {
+	func get() async throws -> [GameOverviewDTO] {
+		[
+			GameOverviewDTO(
+				id: 1,
+				name: "The Legend of Zelda: Breath of the Wild",
+				firstReleaseDate: nil,
+				cover: nil
+			),
+			GameOverviewDTO(
+				id: 2,
+				name: "Hollow Knight",
+				firstReleaseDate: nil,
+				cover: nil
+			),
+			GameOverviewDTO(
+				id: 3,
+				name: "Celeste",
+				firstReleaseDate: nil,
+				cover: nil
+			)
+		]
+	}
+}

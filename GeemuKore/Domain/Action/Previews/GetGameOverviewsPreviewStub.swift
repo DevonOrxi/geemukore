@@ -1,5 +1,5 @@
 //
-//  FetchGameOverviewsPreviewStub.swift
+//  GetGameOverviewsPreviewStub.swift
 //  GeemuKore
 //
 //  Created by Ariel Cid on 27/07/2025.
@@ -8,8 +8,8 @@
 #if DEBUG
 import Foundation
 
-final class FetchGameOverviewsPreviewStub: FetchGameOverviewsServiceProtocol {
-	func fetch() async throws -> [GameOverviewModel] {
+final class GetGameOverviewsPreviewStub: GetGameOverviewsActionProtocol {
+	func execute() async throws -> [GameOverviewModel] {
 		[
 			GameOverviewModel(
 				id: 1,

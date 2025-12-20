@@ -15,13 +15,16 @@ final class HomeViewModel {
     private(set) var isLoading = false
     private(set) var errorMessage: String?
 
-	private let fetchGameOverviews: FetchGameOverviewsServiceProtocol
-	private let onGameSelected: @MainActor (GameOverviewModel) async -> Void
+	private let getGameOverviews: GetGameOverviewsActionProtocol
+	private let getGameDetail: GetGameDetailActionProtocol
+	private let onGameSelected: @MainActor (GameDetailModel) -> Void
 
-	init(fetchGameOverviews: FetchGameOverviewsServiceProtocol,
-		 onGameSelected: @escaping @MainActor (GameOverviewModel) async -> Void
+	init(getGameOverviews: GetGameOverviewsActionProtocol,
+		 getGameDetail: GetGameDetailActionProtocol,
+		 onGameSelected: @escaping @MainActor (GameDetailModel) -> Void
 	) {
-		self.fetchGameOverviews = fetchGameOverviews
+		self.getGameOverviews = getGameOverviews
+		self.getGameDetail = getGameDetail
 		self.onGameSelected = onGameSelected
         Task { await fetchTrending() }
     }
@@ -31,14 +34,22 @@ final class HomeViewModel {
         defer { isLoading = false }
 
 		do {
-			let games = try await fetchGameOverviews.fetch()
+			let games = try await getGameOverviews.execute()
 			self.games = games
 		} catch {
 			print("HANDLE ERROR PAGE")
 		}
     }
 
-	func select(_ game: GameOverviewModel) async {
-		await onGameSelected(game)
+	func select(_ game: GameOverviewModel)
+	{
+		Task {
+			do {
+				let detail = try await getGameDetail.execute(for: game)
+				onGameSelected(detail)
+			} catch {
+				print("HANDLE ERROR PAGE")
+			}
+		}
     }
 }

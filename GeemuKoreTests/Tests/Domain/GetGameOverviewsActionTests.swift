@@ -1,5 +1,5 @@
 //
-//  FetchGameOverviewsServiceTests.swift
+//  GetGameOverviewsActionTests.swift
 //  GeemuKore
 //
 //  Created by Ariel Cid on 27/07/2025.
@@ -8,8 +8,8 @@
 import XCTest
 @testable import GeemuKore
 
-class FetchGameOverviewsServiceTests: XCTestCase {
-	private var sut: FetchGameOverviewsService!
+class GetGameOverviewsActionTests: XCTestCase {
+	private var sut: GetGameOverviewsAction!
 	private var fetchResult: [GameOverviewModel]?
 	private var fetchError: GKError?
 	private var repositorySpy: GameOverviewRepositorySpy!
@@ -21,27 +21,27 @@ class FetchGameOverviewsServiceTests: XCTestCase {
 		repositorySpy = GameOverviewRepositorySpy()
 	}
 	
-	func test_FetchGameOverviewsStub() async throws {
+	func test_GetGameOverviewsStub() async throws {
 		givenASUT()
 		await whenFetching()
 		thenFetchReturnsFailure(error: GKError(.unknownError))
 	}
 	
-	func test_FetchGameOverviewsStub_SettingNil() async throws {
+	func test_GetGameOverviewsStub_SettingNil() async throws {
 		givenASUT()
 		await whenMockingRepository(throwing: GKError(.httpError))
 		await whenFetching()
 		thenFetchReturnsFailure(error: GKError(.httpError))
 	}
 	
-	func test_FetchGameOverviewsStub_SettingValidResponse() async throws {
+	func test_GetGameOverviewsStub_SettingValidResponse() async throws {
 		givenASUT()
 		await whenMockingRepository(returning: [
 			GameOverviewDTO(
 				id: 1,
 				name: "Placeholder",
-				releaseDate: nil,
-				artworks: nil
+				firstReleaseDate: nil,
+				cover: nil
 			)
 		])
 		await whenFetching()
@@ -49,14 +49,14 @@ class FetchGameOverviewsServiceTests: XCTestCase {
 	}
 }
 
-extension FetchGameOverviewsServiceTests {
+extension GetGameOverviewsActionTests {
 	private func givenASUT() {
-		sut = FetchGameOverviewsService(repository: repositorySpy)
+		sut = GetGameOverviewsAction(repository: repositorySpy)
 	}
 	
 	private func whenFetching() async {
 		do {
-			fetchResult = try await sut.fetch()
+			fetchResult = try await sut.execute()
 		} catch {
 			fetchError = error as? GKError
 		}

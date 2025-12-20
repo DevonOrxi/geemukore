@@ -7,25 +7,9 @@
 
 import Foundation
 
-class URLSessionDispatcher: DispatcherProtocol {
-	func dispatch<T: Decodable>(
-		endpoint: String,
-		body: String,
-		clientId: String,
-		accessToken: String
-	) async throws -> T {
-		guard let url = URL(string: endpoint) else {
-			throw GKError(.invalidURL)
-		}
-		
-		var request = URLRequest(url: url)
-		request.httpMethod = "POST"
-		request.httpBody = body.data(using: .utf8)
-		
-		request.setValue("text/plain", forHTTPHeaderField: "Content-Type")
-		request.setValue(clientId, forHTTPHeaderField: "Client-ID")
-		request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-		
+final class URLSessionDispatcher: DispatcherProtocol {
+	func dispatch<T: Decodable>(endpoint: GKEndpoint) async throws -> T {
+		let request = endpoint.urlRequest
 		let (data, response) = try await URLSession.shared.data(for: request)
 		
 		guard let httpResponse = response as? HTTPURLResponse,

@@ -10,6 +10,6 @@ protocol DependencyRepositoryProtocol {
 }
 
 protocol ActionRepositoryProtocol {
-	var fetchGameDetail: FetchGameDetailActionProtocol { get }
-	var fetchGameOverviews: FetchGameOverviewsServiceProtocol { get }
+	var getGameOverviews: GetGameOverviewsActionProtocol { get }
+	var getGameDetail: GetGameDetailActionProtocol { get }
 }

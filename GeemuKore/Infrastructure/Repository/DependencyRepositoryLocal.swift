@@ -14,8 +14,8 @@ final class DependencyRepository: DependencyRepositoryProtocol {
 }
 
 final class ActionRepository: ActionRepositoryProtocol {
-	lazy var fetchGameDetail: FetchGameDetailActionProtocol = FetchGameDetailAction()
-	lazy var fetchGameOverviews: FetchGameOverviewsServiceProtocol = FetchGameOverviewsService(repository: gameOverviewRepository)
+	lazy var getGameOverviews: GetGameOverviewsActionProtocol = GetGameOverviewsAction(repository: gameOverviewRepository)
+	lazy var getGameDetail: GetGameDetailActionProtocol = GetGameDetailAction()
 	
 	private let gameOverviewRepository: GameOverviewRepositoryProtocol
 	

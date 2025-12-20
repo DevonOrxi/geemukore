@@ -5,11 +5,24 @@
 //  Created by Ariel Cid on 26/07/2025.
 //
 
-import Observation
+import Foundation
 
 @Observable @MainActor
 final class GameDetailViewModel {
 	private let model: GameDetailModel
+	
+	var title: String {
+		model.title
+	}
+	
+	var coverURL: URL? {
+		model.coverURL
+	}
+	
+	var firstReleaseDate: String? {
+		guard let date = model.firstReleaseDate else { return nil }
+		return "\(date.year)"
+	}
 	
 	init(model: GameDetailModel) {
 		self.model = model
