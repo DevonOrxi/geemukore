@@ -83,7 +83,7 @@ extension GetGameOverviewsActionTests {
 			id: 1,
 			title: "Placeholder",
 			coverURL: nil,
-			releaseDate: nil
+			firstReleaseDate: nil
 		)
 	}
 }

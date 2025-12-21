@@ -11,5 +11,5 @@ struct GameOverviewModel: Identifiable, Hashable {
     let id: Int
     let title: String
     let coverURL: URL?
-    let releaseDate: Date?
+    let firstReleaseDate: Date?
 }

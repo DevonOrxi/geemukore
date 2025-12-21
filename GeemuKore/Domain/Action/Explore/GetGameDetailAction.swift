@@ -15,7 +15,7 @@ final class GetGameDetailAction: GetGameDetailActionProtocol {
 			id: game.id,
 			title: game.title,
 			coverURL: game.coverURL,
-			firstReleaseDate: game.releaseDate
+			firstReleaseDate: game.firstReleaseDate
 		)
 		return gameDetail
 	}
