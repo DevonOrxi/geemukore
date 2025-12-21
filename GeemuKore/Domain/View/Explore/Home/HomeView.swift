@@ -69,8 +69,8 @@ struct HomeView: View {
 private extension HomeViewModel {
 	static var preview: HomeViewModel {
 		HomeViewModel(
-			getGameOverviews: GetGameOverviewsPreviewStub(),
-			getGameDetail: GetGameDetailPreviewStub(),
+			getGameOverviews: GetGameOverviewsActionStub(),
+			getGameDetail: GetGameDetailActionStub(),
 			onGameSelected: { _ in }
 		)
 	}

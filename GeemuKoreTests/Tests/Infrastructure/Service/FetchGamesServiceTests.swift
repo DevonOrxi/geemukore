@@ -24,7 +24,13 @@ struct FetchGamesServiceTests {
 		)
 	}
 	
-	@Test("Default values")
+	@Test("Starting values")
+	func test_startingValues() async throws {
+		await #expect(authProviderSpy.getAuthCalledCount == 0)
+		await #expect(dispatcherSpy.getReceivedEndpoints().count == 0)
+	}
+	
+	@Test("Get calls Dispatcher and Auth")
 	func test_getCallsDispatcherAndAuth() async throws {
 		let expectedResult = [GameOverviewDTO]()
 		await dispatcherSpy.setNextResult(.success(expectedResult))

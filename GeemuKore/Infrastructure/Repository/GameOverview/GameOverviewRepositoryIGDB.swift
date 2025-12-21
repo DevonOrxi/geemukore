@@ -5,7 +5,7 @@
 //  Created by Ariel Cid on 20/12/2025.
 //
 
-final class GameOverviewRepositoryIGDB: GameOverviewRepositoryProtocol {
+final class IGDBGameOverviewRepository: GameOverviewRepositoryProtocol {
 	private let service: FetchGamesServiceProtocol
 	
 	init(service: FetchGamesServiceProtocol) {

@@ -1,5 +1,5 @@
 //
-//  GetGameOverviewsPreviewStub.swift
+//  GetGameOverviewsActionStub.swift
 //  GeemuKore
 //
 //  Created by Ariel Cid on 27/07/2025.
@@ -8,7 +8,7 @@
 #if DEBUG
 import Foundation
 
-final class GetGameOverviewsPreviewStub: GetGameOverviewsActionProtocol {
+final class GetGameOverviewsActionStub: GetGameOverviewsActionProtocol {
 	func execute() async throws -> [GameOverviewModel] {
 		[
 			GameOverviewModel(

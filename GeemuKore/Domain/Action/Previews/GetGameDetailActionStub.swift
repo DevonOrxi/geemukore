@@ -8,7 +8,7 @@
 #if DEBUG
 import Foundation
 
-final class GetGameDetailPreviewStub: GetGameDetailActionProtocol {
+final class GetGameDetailActionStub: GetGameDetailActionProtocol {
 	func execute(for game: GameOverviewModel) async throws -> GameDetailModel {
 		GameDetailModel(
 			id: game.id,
