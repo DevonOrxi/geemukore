@@ -13,7 +13,7 @@ final class GetGameDetailPreviewStub: GetGameDetailActionProtocol {
 		GameDetailModel(
 			id: game.id,
 			title: game.title,
-			coverURL: game.coverURL,
+			coverUrl: game.coverUrl,
 			firstReleaseDate: game.firstReleaseDate
 		)
 	}

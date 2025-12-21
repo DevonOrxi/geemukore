@@ -10,6 +10,6 @@ import Foundation
 struct GameDetailModel: Identifiable, Hashable {
 	let id: Int
 	let title: String
-	let coverURL: URL?
+	let coverUrl: URL?
 	let firstReleaseDate: Date?
 }

@@ -82,7 +82,7 @@ extension GetGameOverviewsActionTests {
 		GameOverviewModel(
 			id: 1,
 			title: "Placeholder",
-			coverURL: nil,
+			coverUrl: nil,
 			firstReleaseDate: nil
 		)
 	}

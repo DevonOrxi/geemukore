@@ -8,15 +8,20 @@
 import Foundation
 
 class GamesEndpointBuilder {
-	private var auth: IGDBAuthentication
+	enum SortType: String {
+		case popularity
+	}
+	
+	private var auth: ClientAuthentication
 	private var limit: Int = 50
 	private var offset: Int = 0
+	private var sortType: SortType?
 	
-	init(auth: IGDBAuthentication) {
+	init(auth: ClientAuthentication) {
 		self.auth = auth
 	}
 	
-	func withAuth(_ auth: IGDBAuthentication) -> GamesEndpointBuilder {
+	func withAuth(_ auth: ClientAuthentication) -> GamesEndpointBuilder {
 		self.auth = auth
 		return self
 	}
@@ -31,26 +36,34 @@ class GamesEndpointBuilder {
 		return self
 	}
 	
+	func withSorting(_ sortType: SortType) -> GamesEndpointBuilder {
+		self.sortType = sortType
+		return self
+	}
+	
 	func build() -> GamesEndpoint {
 		GamesEndpoint(auth: auth, query: query)
 	}
 	
 	private var query: String {
-	  """
-	  fields id,name,first_release_date,cover.image_id;
-	  sort popularity desc;
-	  limit \(limit);
-	  offset \(offset);
-	  """
+		var q = "fields id,name,first_release_date,cover.image_id;"
+		
+		if let sortType {
+			q += "\nsort \(sortType.rawValue) desc;"
+		}
+		
+		q += "\nlimit \(limit);\noffset \(offset);"
+		
+		return q
 	}
 }
 
 struct GamesEndpoint: GKEndpoint {
 	private let baseURL = URL(string: "https://api.igdb.com/v4/games")!
-	private let auth: IGDBAuthentication
+	private let auth: ClientAuthentication
 	private let query: String
 	
-	init(auth: IGDBAuthentication, query: String) {
+	init(auth: ClientAuthentication, query: String) {
 		self.auth = auth
 		self.query = query
 	}

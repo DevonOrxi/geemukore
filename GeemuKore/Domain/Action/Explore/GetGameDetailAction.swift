@@ -14,7 +14,7 @@ final class GetGameDetailAction: GetGameDetailActionProtocol {
 		let gameDetail = GameDetailModel(
 			id: game.id,
 			title: game.title,
-			coverURL: game.coverURL,
+			coverUrl: game.coverUrl,
 			firstReleaseDate: game.firstReleaseDate
 		)
 		return gameDetail

@@ -21,7 +21,7 @@ struct GameOverviewDTO: Codable, Sendable {
 // MARK: - Mapper helpers
 
 extension GameOverviewDTO {
-	var coverURL: URL? {
+	var coverUrl: URL? {
 		// CDN oficial: https://api-docs.igdb.com/#images
 		// t_cover_big, t_1080p, etc.
 		guard let id = cover?.imageId else { return nil }

@@ -20,7 +20,7 @@ final class GetGameOverviewsAction: GetGameOverviewsActionProtocol, Sendable {
 				GameOverviewModel(
 					id: $0.id,
 					title: $0.name,
-					coverURL: nil,
+					coverUrl: nil,
 					firstReleaseDate: nil
 					// TODO: Map these
 				)

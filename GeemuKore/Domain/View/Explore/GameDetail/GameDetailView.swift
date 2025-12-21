@@ -18,7 +18,7 @@ struct GameDetailView: View {
 		ScrollView {
 			HStack {
 				VStack {
-					RemoteImage(url: viewModel.coverURL)
+					RemoteImage(url: viewModel.coverUrl)
 						.frame(width: 120, height: 180)
 						.cornerRadius(8)
 					
@@ -99,7 +99,7 @@ private extension GameDetailViewModel {
 		GameDetailViewModel(model: .init(
 			id: 1,
 			title: "The Legend of Zelda: Breath of the Wild",
-			coverURL: nil,
+			coverUrl: nil,
 			firstReleaseDate: .createFrom(day: 1, month: 1, year: 2017))
 		)
 	}

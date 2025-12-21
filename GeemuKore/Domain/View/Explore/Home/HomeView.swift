@@ -35,14 +35,14 @@ struct HomeView: View {
 	@ViewBuilder
 	func gameCell(for game: GameOverviewModel) -> some View {
 		HStack {
-			gameCellCover(using: game.coverURL)
+			gameCellCover(using: game.coverUrl)
 			gameCellInfo(title: game.title, releaseDate: .createFrom(day: 1, month: 1, year: 2017))
 		}
 	}
 	
 	@ViewBuilder
-	func gameCellCover(using coverURL: URL?) -> some View {
-		RemoteImage(url: coverURL)
+	func gameCellCover(using coverUrl: URL?) -> some View {
+		RemoteImage(url: coverUrl)
 			.frame(width: 60, height: 90)
 			.cornerRadius(8)
 	}

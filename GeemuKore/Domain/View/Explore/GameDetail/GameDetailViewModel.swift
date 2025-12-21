@@ -15,8 +15,8 @@ final class GameDetailViewModel {
 		model.title
 	}
 	
-	var coverURL: URL? {
-		model.coverURL
+	var coverUrl: URL? {
+		model.coverUrl
 	}
 	
 	var firstReleaseDate: String? {
