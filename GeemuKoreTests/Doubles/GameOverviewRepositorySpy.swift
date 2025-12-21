@@ -24,7 +24,7 @@ final class GameOverviewRepositorySpy: GameOverviewRepositoryProtocol {
 	
 	private let state = State()
 	
-	func get() async throws -> [GameOverviewDTO] {
+	func get(pageSize: Int) async throws -> [GameOverviewDTO] {
 		await state.recordGetCall()
 		
 		let result = await state.returnResult

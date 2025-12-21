@@ -15,7 +15,7 @@ final class GetGameOverviewsAction: GetGameOverviewsActionProtocol, Sendable {
 	}
 	
 	func execute() async throws -> [GameOverviewModel] {
-		try await repository.get()
+		try await repository.get(pageSize: 50)
 			.map {
 				GameOverviewModel(
 					id: $0.id,

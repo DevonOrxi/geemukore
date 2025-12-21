@@ -6,27 +6,13 @@
 //
 
 final class GameOverviewRepositoryIGDB: GameOverviewRepositoryProtocol {
-	private let dispatcher: DispatcherProtocol
-	private let auth: ClientAuthentication
-	private let pageSize: Int
+	private let service: FetchGamesServiceProtocol
 	
-	init(dispatcher: DispatcherProtocol,
-		 auth: ClientAuthentication,
-		 pageSize: Int = 50) {
-		self.dispatcher = dispatcher
-		self.auth = auth
-		self.pageSize = pageSize
+	init(service: FetchGamesServiceProtocol) {
+		self.service = service
 	}
 	
-	func get() async throws -> [GameOverviewDTO] {
-		// Inyectar offset para paginar (y exponer un método get(page:))
-		let endpoint = GamesEndpointBuilder(auth: auth)
-			.withLimit(pageSize)
-			.withOffset(0)
-			.build()
-		
-		let dtos: [GameOverviewDTO] = try await dispatcher.dispatch(endpoint: endpoint)
-		
-		return dtos
+	func get(pageSize: Int = 50) async throws -> [GameOverviewDTO] {
+		try await service.get(pageSize: pageSize)
 	}
 }

@@ -13,7 +13,7 @@ struct GamesEndpointBuilderTests {
 	private let sut: GamesEndpointBuilder
 	
 	init() {
-		let auth = ClientAuthenticationStub()
+		let auth = ClientAuthentication(clientId: "client_id_dummy", accessToken: "access_token_dummy")
 		sut = GamesEndpointBuilder(auth: auth)
 	}
 	
@@ -55,7 +55,7 @@ struct GamesEndpointBuilderTests {
 	
 	@Test("Updating Auth")
 	func test_buildWithAuth() {
-		let newAuth = ClientAuthenticationStub(stubbedId: "new", stubbedToken: "new_token")
+		let newAuth = ClientAuthentication(clientId: "new", accessToken: "new_token")
 		let endpoint = sut
 			.withAuth(newAuth)
 			.build()

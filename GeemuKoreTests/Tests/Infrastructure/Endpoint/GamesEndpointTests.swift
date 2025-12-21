@@ -13,7 +13,7 @@ struct GamesEndpointTests {
 	private var sut: GamesEndpoint
 	
 	init() {
-		let auth = ClientAuthenticationStub()
+		let auth = ClientAuthentication(clientId: "client_id_dummy", accessToken: "access_token_dummy")
 		
 		self.sut = GamesEndpoint(auth: auth, query: "fields name; limit 1;")
 	}

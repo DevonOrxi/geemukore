@@ -6,7 +6,7 @@
 //
 
 final class GameOverviewRepositoryStub: GameOverviewRepositoryProtocol {
-	func get() async throws -> [GameOverviewDTO] {
+	func get(pageSize: Int) async throws -> [GameOverviewDTO] {
 		[
 			GameOverviewDTO(
 				id: 1,
