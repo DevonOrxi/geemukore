@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol GKEndpoint {
+protocol GKEndpoint: Sendable {
 	var urlRequest: URLRequest { get }
 }

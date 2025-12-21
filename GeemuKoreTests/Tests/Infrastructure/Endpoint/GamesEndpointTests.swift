@@ -23,7 +23,7 @@ struct GamesEndpointTests {
 		#expect(sut.urlRequest.url?.absoluteString == "https://api.igdb.com/v4/games")
 	}
 	
-	@Test("HTTP method es POST")
+	@Test("HTTP method is POST")
 	func test_methodIsPost() {
 		#expect(sut.urlRequest.httpMethod == "POST")
 	}
