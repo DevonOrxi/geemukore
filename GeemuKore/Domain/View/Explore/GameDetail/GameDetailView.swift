@@ -97,7 +97,7 @@ struct GameDetailView: View {
 private extension GameDetailViewModel {
 	static var preview: GameDetailViewModel {
 		GameDetailViewModel(model: .init(
-			id: 1,
+			id: "1",
 			title: "The Legend of Zelda: Breath of the Wild",
 			coverUrl: nil,
 			firstReleaseDate: .createFrom(day: 1, month: 1, year: 2017))

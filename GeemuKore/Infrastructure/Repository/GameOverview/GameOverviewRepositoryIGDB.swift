@@ -12,7 +12,7 @@ final class IGDBGameOverviewRepository: GameOverviewRepositoryProtocol {
 		self.service = service
 	}
 	
-	func get(pageSize: Int = 50) async throws -> [GameOverviewDTO] {
+	func get(pageSize: Int = 50) async throws -> [GameDTO] {
 		try await service.get(pageSize: pageSize)
 	}
 }

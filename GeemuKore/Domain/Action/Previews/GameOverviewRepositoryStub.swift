@@ -6,22 +6,22 @@
 //
 
 final class GameOverviewRepositoryStub: GameOverviewRepositoryProtocol {
-	func get(pageSize: Int) async throws -> [GameOverviewDTO] {
+	func get(pageSize: Int) async throws -> [GameDTO] {
 		[
-			GameOverviewDTO(
-				id: 1,
+			GameDTO(
+				id: "1",
 				name: "The Legend of Zelda: Breath of the Wild",
 				firstReleaseDate: nil,
 				cover: nil
 			),
-			GameOverviewDTO(
-				id: 2,
+			GameDTO(
+				id: "2",
 				name: "Hollow Knight",
 				firstReleaseDate: nil,
 				cover: nil
 			),
-			GameOverviewDTO(
-				id: 3,
+			GameDTO(
+				id: "3",
 				name: "Celeste",
 				firstReleaseDate: nil,
 				cover: nil

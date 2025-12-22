@@ -6,7 +6,7 @@
 //
 
 protocol GetGameDetailActionProtocol: Sendable {
-	func execute(for game: GameOverviewModel) async throws -> GameDetailModel
+	func execute(id: String) async throws -> GameModel
 }
 
 

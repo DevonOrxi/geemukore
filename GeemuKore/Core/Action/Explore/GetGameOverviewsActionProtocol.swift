@@ -6,6 +6,6 @@
 //
 
 protocol GetGameOverviewsActionProtocol: Sendable {
-	func execute() async throws -> [GameOverviewModel]
+	func execute() async throws -> [GameModel]
 }
 

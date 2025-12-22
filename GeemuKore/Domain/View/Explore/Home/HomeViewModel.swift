@@ -11,17 +11,17 @@ import SwiftUI
 
 @Observable @MainActor
 final class HomeViewModel {
-    private(set) var games: [GameOverviewModel] = []
+    private(set) var games: [GameModel] = []
     private(set) var isLoading = false
     private(set) var errorMessage: String?
 
 	private let getGameOverviews: GetGameOverviewsActionProtocol
 	private let getGameDetail: GetGameDetailActionProtocol
-	private let onGameSelected: @MainActor (GameDetailModel) -> Void
+	private let onGameSelected: @MainActor (GameModel) -> Void
 
 	init(getGameOverviews: GetGameOverviewsActionProtocol,
 		 getGameDetail: GetGameDetailActionProtocol,
-		 onGameSelected: @escaping @MainActor (GameDetailModel) -> Void
+		 onGameSelected: @escaping @MainActor (GameModel) -> Void
 	) {
 		self.getGameOverviews = getGameOverviews
 		self.getGameDetail = getGameDetail
@@ -41,11 +41,11 @@ final class HomeViewModel {
 		}
     }
 
-	func select(_ game: GameOverviewModel)
+	func select(_ game: GameModel)
 	{
 		Task {
 			do {
-				let detail = try await getGameDetail.execute(for: game)
+				let detail = try await getGameDetail.execute(id: game.id)
 				onGameSelected(detail)
 			} catch {
 				print("HANDLE ERROR PAGE")

@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct GameOverviewDTO: Codable, Sendable {
-	let id: Int
+struct GameDTO: Codable, Sendable {
+	let id: String
 	let name: String
 	let firstReleaseDate: Int?     // epoch seconds
 	let cover: CoverDTO?
@@ -20,7 +20,7 @@ struct GameOverviewDTO: Codable, Sendable {
 
 // MARK: - Mapper helpers
 
-extension GameOverviewDTO {
+extension GameDTO {
 	var coverUrl: URL? {
 		// CDN oficial: https://api-docs.igdb.com/#images
 		// t_cover_big, t_1080p, etc.

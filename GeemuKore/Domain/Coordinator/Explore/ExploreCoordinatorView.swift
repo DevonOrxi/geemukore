@@ -11,11 +11,11 @@ struct ExploreCoordinatorView: View {
 	typealias ExploreScene = ExploreCoordinator.ExploreScene
 	private let getGameOverviews: GetGameOverviewsActionProtocol
 	private let getGameDetail: GetGameDetailActionProtocol
-	private let onGameSelected: @MainActor (GameDetailModel) -> Void
+	private let onGameSelected: @MainActor (GameModel) -> Void
 	
 	init(getGameOverviews: GetGameOverviewsActionProtocol,
 		 getGameDetail: GetGameDetailActionProtocol,
-		 onGameSelected: @escaping @MainActor (GameDetailModel) -> Void
+		 onGameSelected: @escaping @MainActor (GameModel) -> Void
 	) {
 		self.getGameOverviews = getGameOverviews
 		self.getGameDetail = getGameDetail
@@ -48,7 +48,7 @@ struct ExploreCoordinatorView: View {
 	}
 	
 	@ViewBuilder
-	private func detailView(with game: GameDetailModel) -> some View {
+	private func detailView(with game: GameModel) -> some View {
 		let viewModel = GameDetailViewModel(model: game)
 		GameDetailView(viewModel: viewModel)
 	}

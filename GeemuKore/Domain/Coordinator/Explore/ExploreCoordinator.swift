@@ -11,7 +11,7 @@ import Observation
 @Observable @MainActor
 final class ExploreCoordinator {
 	enum ExploreScene: Hashable {
-		case detail(GameDetailModel)
+		case detail(GameModel)
 	}
 	
 	private let rootPath: [ExploreScene] = []
@@ -42,7 +42,7 @@ final class ExploreCoordinator {
 		}
 	}
 	
-	private func goToGameDetailView(for game: GameDetailModel) {
+	private func goToGameDetailView(for game: GameModel) {
 		path.append(.detail(game))
 	}
 	

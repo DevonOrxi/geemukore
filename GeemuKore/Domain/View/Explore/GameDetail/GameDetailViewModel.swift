@@ -9,7 +9,7 @@ import Foundation
 
 @Observable @MainActor
 final class GameDetailViewModel {
-	private let model: GameDetailModel
+	private let model: GameModel
 	
 	var title: String {
 		model.title
@@ -24,7 +24,7 @@ final class GameDetailViewModel {
 		return "\(date.year)"
 	}
 	
-	init(model: GameDetailModel) {
+	init(model: GameModel) {
 		self.model = model
 	}
 }

@@ -33,7 +33,7 @@ struct HomeView: View {
 	}
 	
 	@ViewBuilder
-	func gameCell(for game: GameOverviewModel) -> some View {
+	func gameCell(for game: GameModel) -> some View {
 		HStack {
 			gameCellCover(using: game.coverUrl)
 			gameCellInfo(title: game.title, releaseDate: .createFrom(day: 1, month: 1, year: 2017))

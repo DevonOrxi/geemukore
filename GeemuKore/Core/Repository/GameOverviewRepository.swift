@@ -6,5 +6,5 @@
 //
 
 protocol GameOverviewRepositoryProtocol: Sendable {
-	func get(pageSize: Int) async throws -> [GameOverviewDTO]
+	func get(pageSize: Int) async throws -> [GameDTO]
 }

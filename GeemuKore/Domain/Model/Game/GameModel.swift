@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct GameOverviewModel: Identifiable, Hashable {
-    let id: Int
+struct GameModel: Identifiable, Hashable {
+    let id: String
     let title: String
     let coverUrl: URL?
     let firstReleaseDate: Date?

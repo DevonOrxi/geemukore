@@ -14,15 +14,14 @@ final class GetGameOverviewsAction: GetGameOverviewsActionProtocol, Sendable {
 		self.repository = repository
 	}
 	
-	func execute() async throws -> [GameOverviewModel] {
+	func execute() async throws -> [GameModel] {
 		try await repository.get(pageSize: 50)
 			.map {
-				GameOverviewModel(
+				GameModel(
 					id: $0.id,
 					title: $0.name,
 					coverUrl: nil,
 					firstReleaseDate: nil
-					// TODO: Map these
 				)
 			}
 	}
