@@ -10,7 +10,7 @@ import XCTest
 
 class GetGameOverviewsActionTests: XCTestCase {
 	private var sut: GetGameOverviewsAction!
-	private var fetchResult: [GameOverviewModel]?
+	private var fetchResult: [GameModel]?
 	private var fetchError: GKError?
 	private var repositorySpy: GameOverviewRepositorySpy!
 	
@@ -37,8 +37,8 @@ class GetGameOverviewsActionTests: XCTestCase {
 	func test_GetGameOverviewsStub_SettingValidResponse() async throws {
 		givenASUT()
 		await whenMockingRepository(returning: [
-			GameOverviewDTO(
-				id: 1,
+			GameDTO(
+				id: "1",
 				name: "Placeholder",
 				firstReleaseDate: nil,
 				cover: nil
@@ -62,7 +62,7 @@ extension GetGameOverviewsActionTests {
 		}
 	}
 	
-	private func whenMockingRepository(returning value: [GameOverviewDTO]) async {
+	private func whenMockingRepository(returning value: [GameDTO]) async {
 		await repositorySpy.setReturnResult(.success(value))
 	}
 	
@@ -74,13 +74,13 @@ extension GetGameOverviewsActionTests {
 		XCTAssertEqual(fetchError, error)
 	}
 	
-	private func thenFetchReturnsSuccess(with result: [GameOverviewModel]) {
+	private func thenFetchReturnsSuccess(with result: [GameModel]) {
 		XCTAssertEqual(fetchResult, result)
 	}
 	
-	private var expectedModel: GameOverviewModel {
-		GameOverviewModel(
-			id: 1,
+	private var expectedModel: GameModel {
+		GameModel(
+			id: "1",
 			title: "Placeholder",
 			coverUrl: nil,
 			firstReleaseDate: nil

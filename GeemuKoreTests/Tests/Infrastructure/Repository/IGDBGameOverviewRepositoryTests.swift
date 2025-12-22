@@ -10,9 +10,9 @@ import Testing
 
 final actor FetchGamesServiceSpy: FetchGamesServiceProtocol {
 	private var getCallTimes = 0
-	private var getReturnValue = [GameOverviewDTO]()
+	private var getReturnValue = [GameDTO]()
 	
-	func get(pageSize: Int) async throws -> [GameOverviewDTO] {
+	func get(pageSize: Int) async throws -> [GameDTO] {
 		getCallTimes += 1
 		return getReturnValue
 	}
@@ -21,7 +21,7 @@ final actor FetchGamesServiceSpy: FetchGamesServiceProtocol {
 		getCallTimes
 	}
 	
-	func setGetReturnValue(_ value: [GameOverviewDTO]) {
+	func setGetReturnValue(_ value: [GameDTO]) {
 		getReturnValue = value
 	}
 }

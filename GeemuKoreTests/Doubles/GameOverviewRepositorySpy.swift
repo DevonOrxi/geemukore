@@ -11,20 +11,20 @@ final class GameOverviewRepositorySpy: GameOverviewRepositoryProtocol {
 	
 	private actor State {
 		var getCalledTimes = 0
-		var returnResult: Result<[GameOverviewDTO], GKError> = .failure(GKError(.unknownError))
+		var returnResult: Result<[GameDTO], GKError> = .failure(GKError(.unknownError))
 		
 		func recordGetCall() {
 			getCalledTimes += 1
 		}
 		
-		func setReturnResult(_ newResult: Result<[GameOverviewDTO], GKError>) {
+		func setReturnResult(_ newResult: Result<[GameDTO], GKError>) {
 			returnResult = newResult
 		}
 	}
 	
 	private let state = State()
 	
-	func get(pageSize: Int) async throws -> [GameOverviewDTO] {
+	func get(pageSize: Int) async throws -> [GameDTO] {
 		await state.recordGetCall()
 		
 		let result = await state.returnResult
@@ -42,7 +42,7 @@ final class GameOverviewRepositorySpy: GameOverviewRepositoryProtocol {
 		await state.getCalledTimes
 	}
 	
-	func setReturnResult(_ result: Result<[GameOverviewDTO], GKError>) async {
+	func setReturnResult(_ result: Result<[GameDTO], GKError>) async {
 		await state.setReturnResult(result)
 	}
 }

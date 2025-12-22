@@ -32,10 +32,10 @@ struct FetchGamesServiceTests {
 	
 	@Test("Get calls Dispatcher and Auth")
 	func test_getCallsDispatcherAndAuth() async throws {
-		let expectedResult = [GameOverviewDTO]()
+		let expectedResult = [GameDTO]()
 		await dispatcherSpy.setNextResult(.success(expectedResult))
 		
-		let _: [GameOverviewDTO] = try await sut.get()
+		let _: [GameDTO] = try await sut.get()
 		
 		await #expect(authProviderSpy.getAuthCalledCount == 1)
 		await #expect(dispatcherSpy.getReceivedEndpoints().count == 1)
